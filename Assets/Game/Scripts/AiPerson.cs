@@ -140,7 +140,7 @@ public class AiPerson : MonoBehaviour
         if (Sprites.Length == 0)
             return;
 
-        int index = (int)Mathf.Round(UnityEngine.Random.value * Sprites.Length);
+        int index = (int)Mathf.Round(UnityEngine.Random.value * (Sprites.Length - 1));
         spriteRenderer.sprite = Sprites[index];
     }
 

@@ -8,18 +8,33 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController characterController;
 
-	void Start ()
+	private void Start ()
     {
         characterController = GetComponent<CharacterController>();
 	}
 	
-	void Update ()
+	private void Update ()
     {
-        float vertical = Input.GetAxis("Vertical");
         float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
 
-        Vector3 moveOffset = new Vector3(horizontal, 0, vertical) * Speed;
+        Vector3 moveDir = calculateMoveDir(horizontal, vertical);
 
-        characterController.SimpleMove(moveOffset);
+        characterController.SimpleMove(moveDir * Speed);
 	}
+
+    private Vector3 calculateMoveDir(float horizontal, float vertical)
+    {
+        Camera camera = Camera.main;
+
+        Vector3 cameraForward = Vector3.Scale(
+            camera.transform.forward,
+            new Vector3(1, 0, 1));
+
+        Vector3 moveDir = (
+            (vertical * cameraForward.normalized) +
+            (horizontal * camera.transform.right));
+
+        return moveDir.normalized;
+    }
 }

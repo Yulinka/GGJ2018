@@ -1,8 +1,25 @@
-AI Behavior
 
-Behaviors
- - Stand at point
- - Converse
- - Smoke
- - Walking
 
+
+[TODO]
+[ ] Agent Infection System
+    - Agent must be notified of people in his conversation
+    - Must decide to call AiPerson.Infect() on someone in his conversation
+    - Infected person must keep track of themselves being infected
+    - Must turn fascist after a set amount of time
+
+[ ] Global game state manager
+   - Keeps track of agent
+   - Gets notified when someone gets infected
+   - Gets notified when someone turns fascist
+
+[ ] Add more behaviors
+  - Smoking (StandAt)
+  - Location based activity (StandAtLocation)
+
+[ ] Clue System
+  - Clothing color
+  - Hat or no hat
+  - Accessory or no accessory
+  - Talking bubbles above characters head in conversation
+  - Talking bubble that contains clue about previously spoken to person (always choses fascist if fascist)
