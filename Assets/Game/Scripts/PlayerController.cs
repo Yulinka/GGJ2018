@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    CharacterController characterController;
+    public float Speed = 2f;
+
+    private CharacterController characterController;
 
 	void Start ()
     {
@@ -16,7 +18,8 @@ public class PlayerController : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
         float horizontal = Input.GetAxis("Horizontal");
 
-        characterController.SimpleMove(new Vector3(horizontal, 0, vertical));
-		
+        Vector3 moveOffset = new Vector3(horizontal, 0, vertical) * Speed;
+
+        characterController.SimpleMove(moveOffset);
 	}
 }

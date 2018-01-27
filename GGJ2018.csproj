@@ -303,6 +303,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Game\Scripts\AiPerson.cs" />
     <Compile Include="Assets\Game\Scripts\LookAtCamera.cs" />
     <Compile Include="Assets\Game\Scripts\PlayerController.cs" />
     <Compile Include="Assets\MonsterLove\StateMachine\StateMachine.cs" />
