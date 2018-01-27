@@ -51,8 +51,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Game\Crap\Test.cs" />
+     <Compile Include="Assets\Game\Scripts\Activity.cs" />
+     <Compile Include="Assets\Game\Scripts\AiPerson.cs" />
+     <Compile Include="Assets\Game\Scripts\Conversation.cs" />
+     <Compile Include="Assets\Game\Scripts\Director.cs" />
      <Compile Include="Assets\Game\Scripts\LookAtCamera.cs" />
+     <Compile Include="Assets\Game\Scripts\LookAtTarget.cs" />
      <Compile Include="Assets\Game\Scripts\PlayerController.cs" />
+     <Compile Include="Assets\Game\Scripts\ResetTransforms.cs" />
+     <Compile Include="Assets\Game\Scripts\StandAt.cs" />
      <Compile Include="Assets\MonsterLove\StateMachine\StateMachine.cs" />
      <Compile Include="Assets\MonsterLove\StateMachine\StateMachineRunner.cs" />
  <Reference Include="UnityEngine.UIAutomation">
