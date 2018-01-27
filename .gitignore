@@ -1,8 +1,11 @@
 *.sln.DotSettings.user
-unitygame.userprefs
-.DS_Store
+*.sln
+*.csproj
+*.userprefs
 
 /.vs/
 /obj/
 /Library/
 /Temp/
+
+.DS_Store
