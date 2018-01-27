@@ -394,7 +394,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4753188972893246, guid: 6047c9339920e4753a912d1679782e42, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 7.08
+      value: 4.82
       objectReference: {fileID: 0}
     - target: {fileID: 4753188972893246, guid: 6047c9339920e4753a912d1679782e42, type: 2}
       propertyPath: m_LocalPosition.z
@@ -453,6 +453,16 @@ Prefab:
     - target: {fileID: 114436764713410178, guid: 6047c9339920e4753a912d1679782e42,
         type: 2}
       propertyPath: Animate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114353378617832804, guid: 6047c9339920e4753a912d1679782e42,
+        type: 2}
+      propertyPath: ResetPosition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114353378617832804, guid: 6047c9339920e4753a912d1679782e42,
+        type: 2}
+      propertyPath: ResetScale
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1777,14 +1787,6 @@ Prefab:
     - target: {fileID: 1292677300234746, guid: 6e276b5845d0049e4900a10f3b1f5f33, type: 2}
       propertyPath: m_Name
       value: AiPerson (3)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4666749967195230, guid: 6e276b5845d0049e4900a10f3b1f5f33, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0.93192154
-      objectReference: {fileID: 0}
-    - target: {fileID: 4666749967195230, guid: 6e276b5845d0049e4900a10f3b1f5f33, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 0.36266005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6e276b5845d0049e4900a10f3b1f5f33, type: 2}
