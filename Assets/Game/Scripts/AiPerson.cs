@@ -9,12 +9,13 @@ using System.Linq;
 public enum AiPersonState
 {
     None,
+    Idle,
     Standing,
-    Deciding,
     Smoking,
-    Conversing,
+    StandAt,
+    Conversation,
     ConversationMoving,
-    Walking, // to activity
+    Walking,
 }
 
 public class AiPerson : MonoBehaviour
@@ -22,19 +23,26 @@ public class AiPerson : MonoBehaviour
     public bool IsAgent = false;
     public bool IsInfected = true;
     public AiPerson InfectedBy = null;
+    public float ConversationMaxTime = 9f;
+    public float ConversationMinTime = 5f;
+    public float StandMaxTime = 5f;
+    public float StandMinTime = 3f;
+    public Sprite[] Sprites;
 
     private StateMachine<AiPersonState> states;
     private Vector3 navDest = Vector3.zero;
     private NavMeshAgent navAgent;
     private List<AiPerson> talkedTo;
-
+    private SpriteRenderer spriteRenderer;
     private Director director;
     private Activity activity;
+    private float conversationTime;
+    private float standTime;
 
     public void MoveTo(Vector3 location)
     {
-        if (states.State != AiPersonState.Conversing)
-            throw new Exception("Requires AiState.Conversing");
+        if (states.State != AiPersonState.Conversation)
+            throw new Exception("Requires AiState.Conversation");
 
         talkedTo = new List<AiPerson>();
 
@@ -45,7 +53,6 @@ public class AiPerson : MonoBehaviour
     public void ConversationMove(Vector3 location)
     {
         navDest = location;
-        isInConversation = true;
         states.ChangeState(AiPersonState.ConversationMoving);
     }
 
@@ -83,13 +90,22 @@ public class AiPerson : MonoBehaviour
 
     private void Start()
     {
+        ConversationMaxTime = 30f;
+        ConversationMinTime = 10f;
+        StandMaxTime = 20f;
+        StandMinTime = 4f;
+
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.updatePosition = false;
         navAgent.autoBraking = true;
+
         director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
 
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        SetRandomSprite();
+
         states = StateMachine<AiPersonState>.Initialize(this);
-        states.ChangeState(AiPersonState.Deciding);
+        states.ChangeState(AiPersonState.Idle);
     }
 
     private void Update()
@@ -97,19 +113,48 @@ public class AiPerson : MonoBehaviour
         transform.position = navAgent.nextPosition;
     }
 
-    private void Standing_Update()
+    private void PickNextActivity()
     {
-    }
+        Activity newActivity = null;
 
-    private void Deciding_Update()
-    {
-    }
+        if(UnityEngine.Random.value <= 0.1f)
+            newActivity = director.FindActivity(this, typeof(StandAt));
+        else if (UnityEngine.Random.value > 0.1f)
+            newActivity = director.FindActivity(this, typeof(Conversation));
 
-    private void Deciding_Enter()
-    {
-        activity = director.FindActivity(this, typeof(Conversation));
+        if(newActivity == null || !newActivity.CanJoin(this) || newActivity == activity)
+            return;
+
+        //Debug.Log("Picking new activity: " + activity.GetName());
+        if(activity != null)
+            activity.Leave(this);
+        
+        activity = newActivity;
+        activity.Reserve(this);
         navDest = activity.transform.position;
         states.ChangeState(AiPersonState.Walking);
+    }
+
+    private void SetRandomSprite()
+    {
+        if (Sprites.Length == 0)
+            return;
+
+        int index = (int)Mathf.Round(UnityEngine.Random.value * Sprites.Length);
+        spriteRenderer.sprite = Sprites[index];
+    }
+
+    private void StartActivity(Activity activity)
+    {
+        if (activity is Conversation)
+            states.ChangeState(AiPersonState.Conversation);
+        if (activity is StandAt)
+            states.ChangeState(AiPersonState.StandAt);
+    }
+
+    private void Idle_Update()
+    {
+        PickNextActivity();
     }
 
     private void Walking_Enter()
@@ -120,13 +165,8 @@ public class AiPerson : MonoBehaviour
 
     private void Walking_Update()
     {
-        if (Vector3.Distance(transform.position, activity.transform.position) <= activity.GetApproachDistance())
-        {
-            if (activity.CanJoin(this))
-                states.ChangeState(AiPersonState.Conversing);
-            else
-                states.ChangeState(AiPersonState.Deciding);
-        }
+        if (navAgent.remainingDistance <= activity.GetApproachDistance())
+            StartActivity(activity);
     }
 
     private void Walking_Exit()
@@ -134,33 +174,66 @@ public class AiPerson : MonoBehaviour
         navAgent.isStopped = true;
     }
 
-    private void Smoking_Update()
+    private void StandAt_Enter()
     {
+        standTime= UnityEngine.Random.Range(
+            StandMinTime,
+            StandMaxTime);
 
+        activity.Join(this);
     }
 
-    bool isInConversation = false;
-    private void Conversing_Enter()
+    private void StandAt_Update()
     {
-        if (states.LastState != AiPersonState.ConversationMoving)
-            activity.Join(this);
+        standTime -= Time.deltaTime;
+
+        if (standTime <= 0)
+            PickNextActivity();
     }
 
-    private void Conversing_Exit()
+    private void Conversation_Enter()
     {
-        if (!isInConversation)
-            activity.Leave(this);
+        if (states.LastState == AiPersonState.ConversationMoving)
+            return;
+
+        conversationTime = UnityEngine.Random.Range(
+            ConversationMinTime,
+            ConversationMaxTime);
+
+        //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
+        activity.Join(this);
     }
 
-    private void ConversationMove_Enter()
+    private void Conversation_Update()
+    {
+        conversationTime -= Time.deltaTime;
+
+        if (conversationTime <= 0)
+            PickNextActivity();
+    }
+
+    private void ConversationMoving_Enter()
     {
         navAgent.isStopped = false;
         navAgent.SetDestination(navDest);
-        isInConversation = false;
+    }
+
+    private void ConversationMoving_Update()
+    {
+        //transform.position = navDest;
+        //navAgent.Warp(navDest);
+
+        //Debug.Log(navDest);
+
+        navAgent.SetDestination(navDest);
+
+        if (navAgent.remainingDistance <= 0)
+            states.ChangeState(AiPersonState.Conversation);
     }
 
     private void ConversationMove_Exit()
     {
+        navAgent.SetDestination(transform.position);
         navAgent.isStopped = true;
     }
 }

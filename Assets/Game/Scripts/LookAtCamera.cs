@@ -5,12 +5,22 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class LookAtCamera : MonoBehaviour
 {
+    public bool AxisAligned = false;
+
 	void Start ()
     {
 	}
 	
 	void Update ()
     {
-        transform.LookAt(Camera.main.transform);	
+        var target = Camera.main.transform.position;
+
+        if (AxisAligned)
+            target = new Vector3(
+                target.x,
+                transform.position.y,
+                target.z);
+
+        transform.LookAt(target);
 	}
 }
