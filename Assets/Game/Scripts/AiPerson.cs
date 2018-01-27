@@ -21,10 +21,13 @@ public enum AiPersonState
 public class AiPerson : MonoBehaviour
 {
     public bool IsAgent = false;
-    public bool IsInfected = true;
+    public bool IsInfected = false;
+    public bool IsConverted = false;
     public AiPerson InfectedBy = null;
     public float ConversationMaxTime = 9f;
     public float ConversationMinTime = 5f;
+    public float InfectMaxTime = 20f;
+    public float InfectMinTime = 7f;
     public float StandMaxTime = 5f;
     public float StandMinTime = 3f;
     public Sprite[] Sprites;
@@ -38,6 +41,7 @@ public class AiPerson : MonoBehaviour
     private Activity activity;
     private float conversationTime;
     private float standTime;
+    private float infectedTime;
 
     public void MoveTo(Vector3 location)
     {
@@ -56,10 +60,11 @@ public class AiPerson : MonoBehaviour
         states.ChangeState(AiPersonState.ConversationMoving);
     }
 
-    public void Infect(AiPerson agent)
+    public void InfectMe(AiPerson infectedBy)
     {
         IsInfected = true;
-        InfectedBy = agent;
+        InfectedBy = infectedBy;
+        infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
     }
 
     public void Interrogate()
@@ -85,7 +90,6 @@ public class AiPerson : MonoBehaviour
             talkedTo.Remove(joiner);
 
         talkedTo.Add(joiner);
-
     }
 
     private void Start()
@@ -94,6 +98,8 @@ public class AiPerson : MonoBehaviour
         ConversationMinTime = 10f;
         StandMaxTime = 20f;
         StandMinTime = 4f;
+        InfectMaxTime = 3f;
+        InfectMinTime = 4f;
 
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.updatePosition = false;
@@ -111,6 +117,23 @@ public class AiPerson : MonoBehaviour
     private void Update()
     {
         transform.position = navAgent.nextPosition;
+        TickInfected();
+    }
+
+    private void TickInfected()
+    {
+        if (!IsInfected || IsConverted)
+            return;
+
+        bool inActivityWithAgent = activity.Participants.Contains(InfectedBy);
+
+        if (inActivityWithAgent)
+            return;
+
+        infectedTime -= Time.deltaTime;
+
+        if (infectedTime <= 0)
+            IsConverted = true;
     }
 
     private void PickNextActivity()
@@ -140,7 +163,7 @@ public class AiPerson : MonoBehaviour
         if (Sprites.Length == 0)
             return;
 
-        int index = (int)Mathf.Round(UnityEngine.Random.value * Sprites.Length);
+        int index = (int)Mathf.Round(UnityEngine.Random.value * (Sprites.Length - 1));
         spriteRenderer.sprite = Sprites[index];
     }
 
@@ -150,6 +173,19 @@ public class AiPerson : MonoBehaviour
             states.ChangeState(AiPersonState.Conversation);
         if (activity is StandAt)
             states.ChangeState(AiPersonState.StandAt);
+    }
+
+    private void InfectParticipant(Activity searchIn)
+    {
+        AiPerson target = (searchIn.Participants
+            .Where((p) => !p.IsInfected && p != this)
+            .ToArray()
+            .GetRandomItem());
+
+        if (target == null)
+            return;
+
+        target.InfectMe(this);
     }
 
     private void Idle_Update()
@@ -208,8 +244,12 @@ public class AiPerson : MonoBehaviour
     {
         conversationTime -= Time.deltaTime;
 
-        if (conversationTime <= 0)
+        if (conversationTime <= 0) {
             PickNextActivity();
+
+            if(IsAgent)
+                InfectParticipant(activity);
+        }
     }
 
     private void ConversationMoving_Enter()
@@ -222,8 +262,6 @@ public class AiPerson : MonoBehaviour
     {
         //transform.position = navDest;
         //navAgent.Warp(navDest);
-
-        //Debug.Log(navDest);
 
         navAgent.SetDestination(navDest);
 
