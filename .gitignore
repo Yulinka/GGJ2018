@@ -1,0 +1,8 @@
+*.sln.DotSettings.user
+unitygame.userprefs
+.DS_Store
+
+/.vs/
+/obj/
+/Library/
+/Temp/
