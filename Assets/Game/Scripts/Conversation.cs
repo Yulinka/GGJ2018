@@ -25,46 +25,53 @@ public class Conversation : Activity
 
     public override float GetApproachDistance()
     {
-        if (Participants.Count == 0)
-            return 0;
+        var theta = (1f / Participants.Count) * Mathf.PI * 2;
+        var radius = (ActorSize + RingPadding * 2) / theta;
 
-        float scale = (float)Participants.Count / (float)MaxParticipants;
-        float radius = (ActorSize + RingPadding + 1f * RingScale) * scale;
-
-        return radius;
+        return radius + 2;
 
     }
 
     void DistributeParticipants()
     {
-        if (Participants.Count == 0)
-            return;
-        
-        if(Participants.Count == 1)
-        {
-            Participants[0].ConversationMove(transform.position);
-            return;
-        }
-
-        float theta = (360 / Participants.Count);
-        float scale = (float)Participants.Count / (float)MaxParticipants;
-
+        var theta = (1f / Participants.Count) * Mathf.PI * 2;
+        var radius = (ActorSize + RingPadding * 2) / theta;
         for (int i = 0; i < Participants.Count; ++i)
         {
-            float angle = theta * i;
-            float radius = (ActorSize + RingPadding * RingScale) * scale;
-
-            Vector3 offset = Vector3.zero;
-            offset.x = radius * Mathf.Sin(angle * Mathf.Deg2Rad);
-            offset.z = radius * Mathf.Cos(angle * Mathf.Deg2Rad);
-
-            Participants[i].ConversationMove(transform.position + offset);
+            var unit = new Vector3(
+                Mathf.Cos(i * theta),
+                0,
+                Mathf.Sin(i * theta)
+            );
+            Participants[i].ConversationMove(transform.position + radius * unit);
         }
     }
 
     public override void Join(AiPerson participant)
     {
-        base.Join(participant);
+        if (!Reserved.Remove(participant))
+            throw new System.IndexOutOfRangeException("Participant's spot was not reserved");
+
+        //var diff = Vector3.Normalize(transform.position - participant.transform.position);
+        //var spot = ((Vector3.Cross(diff, Vector3.right).y + 1) / 2);
+        //Participants.Insert(Mathf.RoundToInt(spot * Participants.Count), participant);
+
+        var min = float.PositiveInfinity;
+        var mini = 0;
+        for (int i = 0; i < Participants.Count; ++i)
+        {
+            var dist = Vector3.Distance(
+                Participants[i].transform.position,
+                participant.transform.position
+            );
+            if (dist < min)
+            {
+                min = dist;
+                mini = i;
+            }
+        }
+        Participants.Insert(mini, participant);
+
         DistributeParticipants();
     }
 
@@ -78,3 +85,4 @@ public class Conversation : Activity
         return false;
     }
 }
+

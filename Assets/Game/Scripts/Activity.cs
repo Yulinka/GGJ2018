@@ -7,11 +7,17 @@ public abstract class Activity : MonoBehaviour
     public int MaxParticipants = 10;
     public List<AiPerson> Participants;
     public List<AiPerson> Reserved;
+    public Color Color { get; set; }
 
     public Activity()
     {
         Participants = new List<AiPerson>();
         Reserved = new List<AiPerson>();
+    }
+
+    private void Awake()
+    {
+        Color = Random.ColorHSV();
     }
 
     public virtual bool CanJoin(AiPerson participant)
@@ -30,10 +36,8 @@ public abstract class Activity : MonoBehaviour
 
     public virtual void Join(AiPerson participant)
     {
-        if (!Reserved.Contains(participant))
-            throw new System.Exception("Not reserved tried to join");
-
-        Reserved.Remove(participant);
+        if (!Reserved.Remove(participant))
+            throw new System.IndexOutOfRangeException("Participant's spot was not reserved");
         Participants.Add(participant);
     }
 

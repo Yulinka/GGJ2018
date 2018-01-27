@@ -24,8 +24,8 @@ public class AiPerson : MonoBehaviour
     public bool IsInfected = false;
     public bool IsConverted = false;
     public AiPerson InfectedBy = null;
-    public float ConversationMaxTime = 9f;
-    public float ConversationMinTime = 5f;
+    public float ConversationMaxTime = 2f;
+    public float ConversationMinTime = 1f;
     public float InfectMaxTime = 20f;
     public float InfectMinTime = 7f;
     public float StandMaxTime = 5f;
@@ -39,9 +39,11 @@ public class AiPerson : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Director director;
     private Activity activity;
-    private float conversationTime;
-    private float standTime;
     private float infectedTime;
+    private float activityTime;
+    private float startingActivityTime;
+    private PlayerController player;
+    private bool didInfect;
 
     public void MoveTo(Vector3 location)
     {
@@ -94,18 +96,19 @@ public class AiPerson : MonoBehaviour
 
     private void Start()
     {
-        ConversationMaxTime = 30f;
-        ConversationMinTime = 10f;
-        StandMaxTime = 20f;
-        StandMinTime = 4f;
+        ConversationMaxTime = 8f;
+        ConversationMinTime = 4f;
+        StandMaxTime = 3f;
+        StandMinTime = 2f;
         InfectMaxTime = 3f;
-        InfectMinTime = 4f;
+        InfectMinTime = 1f;
 
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.updatePosition = false;
         navAgent.autoBraking = true;
 
         director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         SetRandomSprite();
@@ -118,6 +121,17 @@ public class AiPerson : MonoBehaviour
     {
         transform.position = navAgent.nextPosition;
         TickInfected();
+
+        if (IsInfected)
+        {
+            var color = IsConverted ? Color.magenta : Color.cyan;
+            var a = transform.position + new Vector3(0, 0.1f, 0.1f);
+            var b = transform.position + new Vector3(-0.1f, 0.1f, -0.1f);
+            var c = transform.position + new Vector3(-0.1f, 0.1f, -0.1f);
+            Debug.DrawRay(a, b, color);
+            Debug.DrawRay(b, c, color);
+            Debug.DrawRay(c, a, color);
+        }
     }
 
     private void TickInfected()
@@ -151,7 +165,7 @@ public class AiPerson : MonoBehaviour
         //Debug.Log("Picking new activity: " + activity.GetName());
         if(activity != null)
             activity.Leave(this);
-        
+
         activity = newActivity;
         activity.Reserve(this);
         navDest = activity.transform.position;
@@ -173,10 +187,17 @@ public class AiPerson : MonoBehaviour
             states.ChangeState(AiPersonState.Conversation);
         if (activity is StandAt)
             states.ChangeState(AiPersonState.StandAt);
+        didInfect = false;
     }
 
     private void InfectParticipant(Activity searchIn)
     {
+        var activityRadius = Vector3.Distance(transform.position, activity.transform.position);
+        var playerDistance = Vector3.Distance(transform.position, player.transform.position);
+
+        if (playerDistance < activityRadius + 2)
+            ;// return; //player is in viscinity
+
         AiPerson target = (searchIn.Participants
             .Where((p) => !p.IsInfected && p != this)
             .ToArray()
@@ -212,18 +233,19 @@ public class AiPerson : MonoBehaviour
 
     private void StandAt_Enter()
     {
-        standTime= UnityEngine.Random.Range(
+        activityTime = UnityEngine.Random.Range(
             StandMinTime,
             StandMaxTime);
+        startingActivityTime = activityTime;
 
         activity.Join(this);
     }
 
     private void StandAt_Update()
     {
-        standTime -= Time.deltaTime;
+        activityTime -= Time.deltaTime;
 
-        if (standTime <= 0)
+        if (activityTime <= 0)
             PickNextActivity();
     }
 
@@ -232,9 +254,10 @@ public class AiPerson : MonoBehaviour
         if (states.LastState == AiPersonState.ConversationMoving)
             return;
 
-        conversationTime = UnityEngine.Random.Range(
+        activityTime = UnityEngine.Random.Range(
             ConversationMinTime,
             ConversationMaxTime);
+        startingActivityTime = activityTime;
 
         //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
         activity.Join(this);
@@ -242,13 +265,17 @@ public class AiPerson : MonoBehaviour
 
     private void Conversation_Update()
     {
-        conversationTime -= Time.deltaTime;
+        activityTime -= Time.deltaTime;
+        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
 
-        if (conversationTime <= 0) {
-            PickNextActivity();
-
-            if(IsAgent)
+        if (activityTime <= 0) {
+            if (IsAgent && !didInfect)
+            {
                 InfectParticipant(activity);
+                didInfect = true;
+            }
+
+            PickNextActivity();
         }
     }
 
@@ -260,6 +287,7 @@ public class AiPerson : MonoBehaviour
 
     private void ConversationMoving_Update()
     {
+        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
         //transform.position = navDest;
         //navAgent.Warp(navDest);
 
