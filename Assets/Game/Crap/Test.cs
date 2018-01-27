@@ -9,7 +9,7 @@ public class Test : MonoBehaviour {
 	void Start () {
         var activity = FindObjectOfType<Activity>();
         if (activity != null)
-            activity.Join(this);
+            activity.Join(GetComponent<AiPerson>());
 	}
 
 	// Update is called once per frame
@@ -21,6 +21,6 @@ public class Test : MonoBehaviour {
     {
         var activity = FindObjectOfType<Activity>();
         if (activity != null)
-            activity.Leave(this);
+            activity.Leave(GetComponent<AiPerson>());
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Director : MonoBehaviour
 {
-    public Activity FindActivity(MonoBehaviour participant, System.Type typeFilter = null)
+    public Activity FindActivity(AiPerson participant, System.Type typeFilter = null)
     {
         var children = GetComponentsInChildren(typeFilter == null ? typeFilter : typeof(Activity));
 

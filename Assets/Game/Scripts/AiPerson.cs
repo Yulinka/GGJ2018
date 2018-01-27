@@ -10,9 +10,11 @@ public enum AiPersonState
 {
     None,
     Standing,
+    Deciding,
     Smoking,
     Conversing,
-    Walking
+    ConversationMoving,
+    Walking, // to activity
 }
 
 public class AiPerson : MonoBehaviour
@@ -26,6 +28,9 @@ public class AiPerson : MonoBehaviour
     private NavMeshAgent navAgent;
     private List<AiPerson> talkedTo;
 
+    private Director director;
+    private Activity activity;
+
     public void MoveTo(Vector3 location)
     {
         if (states.State != AiPersonState.Conversing)
@@ -37,6 +42,13 @@ public class AiPerson : MonoBehaviour
         states.ChangeState(AiPersonState.Walking);
     }
 
+    public void ConversationMove(Vector3 location)
+    {
+        navDest = location;
+        isInConversation = true;
+        states.ChangeState(AiPersonState.ConversationMoving);
+    }
+
     public void Infect(AiPerson agent)
     {
         IsInfected = true;
@@ -45,7 +57,7 @@ public class AiPerson : MonoBehaviour
 
     public void Interrogate()
     {
-        if(talkedTo.Count == 0)
+        if (talkedTo.Count == 0)
         {
             Debug.Log("Havent spoken to anyone");
         }
@@ -69,26 +81,35 @@ public class AiPerson : MonoBehaviour
 
     }
 
-	private void Start()
-	{
+    private void Start()
+    {
         navAgent = GetComponent<NavMeshAgent>();
+        navAgent.updatePosition = false;
+        navAgent.autoBraking = true;
+        director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
 
         states = StateMachine<AiPersonState>.Initialize(this);
-        states.ChangeState(AiPersonState.Standing);
-	}
+        states.ChangeState(AiPersonState.Deciding);
+    }
 
-	private void Update()
-	{
-			
-	}
+    private void Update()
+    {
+        transform.position = navAgent.nextPosition;
+    }
 
     private void Standing_Update()
     {
     }
 
-    private void DecideAction_Update()
+    private void Deciding_Update()
     {
-        states.ChangeState(AiPersonState.Conversing);
+    }
+
+    private void Deciding_Enter()
+    {
+        activity = director.FindActivity(this, typeof(Conversation));
+        navDest = activity.transform.position;
+        states.ChangeState(AiPersonState.Walking);
     }
 
     private void Walking_Enter()
@@ -99,7 +120,13 @@ public class AiPerson : MonoBehaviour
 
     private void Walking_Update()
     {
-        navAgent.SetDestination(navDest);
+        if (Vector3.Distance(transform.position, activity.transform.position) <= activity.GetApproachDistance())
+        {
+            if (activity.CanJoin(this))
+                states.ChangeState(AiPersonState.Conversing);
+            else
+                states.ChangeState(AiPersonState.Deciding);
+        }
     }
 
     private void Walking_Exit()
@@ -109,11 +136,31 @@ public class AiPerson : MonoBehaviour
 
     private void Smoking_Update()
     {
-        
+
     }
 
+    bool isInConversation = false;
     private void Conversing_Enter()
     {
-        
+        if (states.LastState != AiPersonState.ConversationMoving)
+            activity.Join(this);
+    }
+
+    private void Conversing_Exit()
+    {
+        if (!isInConversation)
+            activity.Leave(this);
+    }
+
+    private void ConversationMove_Enter()
+    {
+        navAgent.isStopped = false;
+        navAgent.SetDestination(navDest);
+        isInConversation = false;
+    }
+
+    private void ConversationMove_Exit()
+    {
+        navAgent.isStopped = true;
     }
 }
