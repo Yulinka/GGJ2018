@@ -1,10 +1,12 @@
 ﻿<Properties StartupConfiguration="{34F37DCD-085B-68A8-DE6C-7DF8C7636D4C}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Game/Scripts/LookAtCamera.cs">
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Game/Scripts/ResetTransforms.cs">
     <Files>
-      <File FileName="Assets/Game/Scripts/PlayerController.cs" Line="23" Column="52" />
-      <File FileName="Assets/Game/Scripts/AiPerson.cs" Line="45" Column="20" />
+      <File FileName="Assets/Game/Scripts/PlayerController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Game/Scripts/AiPerson.cs" Line="1" Column="1" />
       <File FileName="Assets/MonsterLove/StateMachine/StateMachine.cs" Line="381" Column="43" />
       <File FileName="Assets/Game/Scripts/LookAtCamera.cs" Line="15" Column="3" />
+      <File FileName="Assets/Game/Scripts/ResetTransforms.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
