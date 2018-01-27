@@ -56,6 +56,8 @@
      <Compile Include="Assets\Game\Scripts\AiPerson.cs" />
      <Compile Include="Assets\Game\Scripts\Conversation.cs" />
      <Compile Include="Assets\Game\Scripts\Director.cs" />
+     <Compile Include="Assets\Game\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Game\Scripts\Helpers.cs" />
      <Compile Include="Assets\Game\Scripts\LookAtCamera.cs" />
      <Compile Include="Assets\Game\Scripts\LookAtTarget.cs" />
      <Compile Include="Assets\Game\Scripts\PlayerController.cs" />

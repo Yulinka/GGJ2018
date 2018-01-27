@@ -30,13 +30,29 @@ public class AiPerson : MonoBehaviour
     public float InfectMinTime = 7f;
     public float StandMaxTime = 5f;
     public float StandMinTime = 3f;
-    public Sprite[] Sprites;
+
+	// Hot Lady
+	public Sprite[] BodySprites;
+	public Sprite[] GlassesSprites;
+	public Sprite[] HatSprites;
+	public Sprite[] ClothsSprites;
+	public Sprite[] HairSprites;
+
+	public int bodyIndex;
+	public int glassesIndex;
+	public int hatIndex;
+	public int clothsIndex;
+	public int hairIndex;
+	private SpriteRenderer bodyRenderer;
+	private SpriteRenderer glassesRenderer;
+	private SpriteRenderer hatRenderer;
+	private SpriteRenderer hairRenderer;
+	private SpriteRenderer clothsRenderer;
 
     private StateMachine<AiPersonState> states;
     private Vector3 navDest = Vector3.zero;
     private NavMeshAgent navAgent;
     private List<AiPerson> talkedTo;
-    private SpriteRenderer spriteRenderer;
     private Director director;
     private Activity activity;
     private float infectedTime;
@@ -110,8 +126,17 @@ public class AiPerson : MonoBehaviour
         director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        SetRandomSprite();
+		bodyRenderer = transform.Find("Body").GetComponent<SpriteRenderer>();
+		hatRenderer = transform.Find("Hat").GetComponent<SpriteRenderer>();
+		hairRenderer = transform.Find("Hair").GetComponent<SpriteRenderer>();
+		glassesRenderer = transform.Find("Glasses").GetComponent<SpriteRenderer>();
+		clothsRenderer = transform.Find("Cloths").GetComponent<SpriteRenderer>();
+        
+		SetRandomSprite(bodyRenderer, BodySprites);
+		SetRandomSprite(hatRenderer, HatSprites);
+		SetRandomSprite(hairRenderer, HairSprites);
+		SetRandomSprite(glassesRenderer, GlassesSprites);
+		SetRandomSprite(clothsRenderer, ClothsSprites);
 
         states = StateMachine<AiPersonState>.Initialize(this);
         states.ChangeState(AiPersonState.Idle);
@@ -172,13 +197,13 @@ public class AiPerson : MonoBehaviour
         states.ChangeState(AiPersonState.Walking);
     }
 
-    private void SetRandomSprite()
+	private void SetRandomSprite(SpriteRenderer renderer, Sprite[] sprites)
     {
-        if (Sprites.Length == 0)
+        if (sprites.Length == 0)
             return;
 
-        int index = (int)Mathf.Round(UnityEngine.Random.value * (Sprites.Length - 1));
-        spriteRenderer.sprite = Sprites[index];
+        int index = (int)Mathf.Round(UnityEngine.Random.value * (sprites.Length - 1));
+        renderer.sprite = sprites[index];
     }
 
     private void StartActivity(Activity activity)
