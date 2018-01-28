@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public int InfectedCount = 0;
     public int ConvertedCount = 0;
     public int ConvertedPercent = 0;
+    public int WinTarget = 10;
     public Slider Slider;
     public PlayerController Player;
 
@@ -54,7 +55,7 @@ public class GameManager : MonoBehaviour
         float increment = 0.05f * Time.deltaTime;
         Slider.value = Mathf.Clamp(Slider.value + increment, 0, targetSlider);
 
-        if (Slider.value >= 0.5f && !hasLost)
+        if (ConvertedCount >= WinTarget && !hasLost)
             OnLose();
 	}
 
@@ -82,7 +83,8 @@ public class GameManager : MonoBehaviour
             InfectedCount = people.Count((p) => p.IsInfected);
 
             int TotalCount = people.Count -1;
-            float percent = (float)ConvertedCount / TotalCount;
+            float percent = (float)ConvertedCount / WinTarget;
+
             ConvertedPercent = (int)(percent * 100f);
             targetSlider = percent;
         }
