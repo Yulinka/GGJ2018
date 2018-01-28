@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
 		if (!gameStarted)
 		{
 			if (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetKeyDown (KeyCode.Space))
+				SpawnCount = 40;
 				StartGame();
 		}
 
