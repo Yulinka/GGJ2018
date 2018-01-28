@@ -40,15 +40,15 @@ public class GameManager : MonoBehaviour
         Slider = GameObject.FindObjectOfType<Slider>();
         Slider.minValue = 0f;
         Slider.maxValue = 1f;
+        Slider.gameObject.SetActive(false);
 	}
 
 	private void Update ()
     {
-		if (!gameStarted)
-		{
-			if (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetKeyDown (KeyCode.Space))
-				SpawnCount = 40;
-				StartGame();
+        if (!gameStarted)
+        {
+            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space))
+                StartCoroutine(StartGame());
 		}
 
         if (!hasLost)
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
             OnLose();
 	}
 
-	private void StartGame()
+    IEnumerator StartGame()
 	{
 		GeneratePartygoers(SpawnCount, AgentSpawnCount);
 
@@ -76,6 +76,10 @@ public class GameManager : MonoBehaviour
 		images[2].CrossFadeAlpha (0, 2.0f, false);
 
 		gameStarted = true;
+
+        yield return new WaitForSeconds(2.0f);
+        Slider.gameObject.SetActive(true);
+
 	}
 
 
