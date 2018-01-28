@@ -48,15 +48,16 @@ public class BodyConfig
     public BodyHatState Hat;
     public BodyClothesState Clothes;
 
-    private Sprite BodySprite;
-    private Sprite GlassesSprite;
-    private Sprite HatSprite;
-    private Sprite ClothesSprite;
+    public Sprite BodySprite;
+    public Sprite HairSprite;
+    public Sprite GlassesSprite;
+    public Sprite HatSprite;
+    public Sprite ClothesSprite;
 }
 
 public class BodyGenerator : MonoBehaviour
 {
-    BodyConfig GetNextConfig()
+    public BodyConfig GetNextConfig()
     {
         var config = new BodyConfig();
         config.Body = BodyState.HotLady;
@@ -64,17 +65,19 @@ public class BodyGenerator : MonoBehaviour
         config.Glasses = BodyGlassesState.None;
         config.Hat = BodyHatState.Hat;
 
+        config.BodySprite = Resources.Load<Sprite>("Characters/hotlady/body/cream");
+        config.HairSprite = Resources.Load<Sprite>("Characters/hotlady/hairs/hair5");
+        config.ClothesSprite = Resources.Load<Sprite>("Characters/hotlady/clothes/red");
+        config.HatSprite = Resources.Load<Sprite>("Characters/hotlady/hats/hat1");
+        config.GlassesSprite = Resources.Load<Sprite>("Characters/hotlady/glasses/glasses1");
 
-
-
-        config.Body = BodyState
-        return null;
+        return config;
     }
 
     BodyConfig GenerateBody()
     {
         BodyConfig config = GetNextConfig();
-        config.ChooseSprites();
+        //config.ChooseSprites();
         return config;
         
     }
