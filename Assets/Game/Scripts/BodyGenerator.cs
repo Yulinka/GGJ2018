@@ -77,35 +77,52 @@ public class BodyConfig
     public Sprite GlassesSprite;
     public Sprite HatSprite;
     public Sprite ClothesSprite;
+
+	public string hashKey() {
+		return Body + "_" +
+		Glasses + "_" +
+		Hat + "_" +
+		Hair + "_" +
+		Clothes;
+	}
 }
 
 public class BodyGenerator : MonoBehaviour
 {
+	private Dictionary<string, BodyConfig> knownConfigs = new Dictionary<string, BodyConfig>();
+
     public BodyConfig GetNextConfig()
     {
         var config = new BodyConfig();
-		config.Body = this.selectRandomFromEnum<BodyState>();
-//		config.Body = BodyState.HotLady;
-		config.Skin = this.selectRandomFromEnum<BodySkinState>();
-		config.Glasses = this.selectRandomFromEnum<BodyGlassesState>();
-		config.Hat = this.selectRandomFromEnum<BodyHatState>();
-		config.Hair = this.selectRandomFromEnum<BodyHairState>();
-		config.HatColor = this.selectRandomFromEnum<BodyHatColorState>();
-		config.Clothes = this.selectRandomFromEnum<BodyClothesState>();
 
-//		string bodyPath = this.buildBodySpritePath(config);
-//		string hairPath = this.buildHairSpritePath(config);
-//		string clothesPath = this.buildClothesSpritePath(config);
-//		string hatPath = this.buildHatSpritePath(config);
-//		string glassesPath = this.buildGlassesSpritePath(config);
+		while (true) {
+			config.Body = this.selectRandomFromEnum<BodyState> ();
+			config.Skin = this.selectRandomFromEnum<BodySkinState> ();
+			config.Glasses = this.selectRandomFromEnum<BodyGlassesState> ();
+			config.Hat = this.selectRandomFromEnum<BodyHatState> ();
+			config.Hair = this.selectRandomFromEnum<BodyHairState> ();
+			config.HatColor = this.selectRandomFromEnum<BodyHatColorState> ();
+			config.Clothes = this.selectRandomFromEnum<BodyClothesState> ();
 
-		config.BodySprite = Resources.Load<Sprite>(this.buildBodySpritePath(config));
-		config.HairSprite = Resources.Load<Sprite>(this.buildHairSpritePath(config));
-		config.ClothesSprite = Resources.Load<Sprite>(this.buildClothesSpritePath(config));
-		config.HatSprite = Resources.Load<Sprite>(this.buildHatSpritePath(config));
-		config.GlassesSprite = Resources.Load<Sprite>(this.buildGlassesSpritePath(config));
+			if (!knownConfigs.ContainsKey(config.hashKey()))
+			{
+				knownConfigs.Add(config.hashKey (), config);
 
-        return config;
+	//			string bodyPath = this.buildBodySpritePath(config);
+	//			string hairPath = this.buildHairSpritePath(config);
+	//			string clothesPath = this.buildClothesSpritePath(config);
+	//			string hatPath = this.buildHatSpritePath(config);
+	//			string glassesPath = this.buildGlassesSpritePath(config);
+
+				config.BodySprite = Resources.Load<Sprite> (this.buildBodySpritePath (config));
+				config.HairSprite = Resources.Load<Sprite> (this.buildHairSpritePath (config));
+				config.ClothesSprite = Resources.Load<Sprite> (this.buildClothesSpritePath (config));
+				config.HatSprite = Resources.Load<Sprite> (this.buildHatSpritePath (config));
+				config.GlassesSprite = Resources.Load<Sprite> (this.buildGlassesSpritePath (config));
+
+				return config;
+			}
+		}
     }
 
     BodyConfig GenerateBody()
