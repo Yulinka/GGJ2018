@@ -41,6 +41,7 @@ public class AiPerson : MonoBehaviour
     private NavMeshAgent navAgent;
     private List<AiPerson> talkedTo;
     private Director director;
+    private AudioSource tearPaper;
     private Activity activity;
     private float infectedTime;
     private float activityTime;
@@ -76,6 +77,7 @@ public class AiPerson : MonoBehaviour
         InfectedBy = infectedBy;
         infectedTotalTime = Time.time;
         infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
+        tearPaper.Play();
         name += " (Infected)";
         Debug.Log("Infected", this);
     }
@@ -166,6 +168,7 @@ public class AiPerson : MonoBehaviour
         director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         characterCanvas = transform.Find("Canvas").gameObject.GetComponent<Canvas>();
+        tearPaper = transform.Find("TearPaper").gameObject.GetComponent<AudioSource>();
 
         hintCanvas = transform.Find("HintContainer").transform.Find("Hint").gameObject.GetComponent<Canvas>();
         Hint = hintCanvas.GetComponent<HintBubble>();

@@ -92,7 +92,7 @@ public class Conversation : Activity
         if (audio == null)
             return;
         
-        if (Participants.Count >= 2)
+        if (Participants.Count >= 3)
             audio.Play();
         else
             audio.Stop();

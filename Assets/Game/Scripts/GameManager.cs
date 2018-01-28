@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public Transform SpawnPoint;
 
     private float targetSlider;
+	private bool gameStarted = false;
     private bool hasLost = false;
 
     public void EndGame(AiPerson target)
@@ -36,18 +37,6 @@ public class GameManager : MonoBehaviour
 
     private void Start ()
     {
-        GeneratePartygoers(SpawnCount, AgentSpawnCount);
-
-        people = (GameObject
-            .FindGameObjectsWithTag("Person")
-            .Select((o) => o.GetComponent<AiPerson>())
-            .ToList());
-
-		Image[] images = IntroScreen.GetComponentsInChildren<Image> ();
-		images[0].CrossFadeAlpha (0, 2.0f, false);
-		images[1].CrossFadeAlpha (0, 2.0f, false);
-		images[2].CrossFadeAlpha (0, 2.0f, false);
-
         Slider = GameObject.FindObjectOfType<Slider>();
         Slider.minValue = 0f;
         Slider.maxValue = 1f;
@@ -55,6 +44,12 @@ public class GameManager : MonoBehaviour
 
 	private void Update ()
     {
+		if (!gameStarted)
+		{
+			if (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetKeyDown (KeyCode.Space))
+				StartGame();
+		}
+
         if (!hasLost)
             CalculateScore();
 
@@ -63,6 +58,23 @@ public class GameManager : MonoBehaviour
 
         if (ConvertedCount >= WinTarget && !hasLost)
             OnLose();
+	}
+
+	private void StartGame()
+	{
+		GeneratePartygoers(SpawnCount, AgentSpawnCount);
+
+		people = (GameObject
+			.FindGameObjectsWithTag("Person")
+			.Select((o) => o.GetComponent<AiPerson>())
+			.ToList());
+
+		Image[] images = IntroScreen.GetComponentsInChildren<Image> ();
+		images[0].CrossFadeAlpha (0, 2.0f, false);
+		images[1].CrossFadeAlpha (0, 2.0f, false);
+		images[2].CrossFadeAlpha (0, 2.0f, false);
+
+		gameStarted = true;
 	}
 
 
