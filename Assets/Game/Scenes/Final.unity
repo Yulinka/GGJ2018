@@ -2220,6 +2220,11 @@ Prefab:
       propertyPath: IntroScreen
       value: 
       objectReference: {fileID: 926769074}
+    - target: {fileID: 114782810490540582, guid: 5c79a923c39396c41bee38704e8bcc74,
+        type: 2}
+      propertyPath: LoseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 923090b3f2891a1488e11811fa9ce606, type: 3}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
