@@ -91,12 +91,12 @@ public class GameManager : MonoBehaviour
     {
         Player.enabled = false;
 
-        foreach (var p in people)
+		foreach (var p in people)
         {
             if (p.IsAgent)
                 p.Hint.ShowLose(true);
             else
-                p.Hint.ShowDotDotDot();
+                p.Hint.ShowWin(false);
 
             p.OnWin();
         }
@@ -139,7 +139,7 @@ public class GameManager : MonoBehaviour
             ConvertedCount = people.Count((p) => p.IsConverted);
             InfectedCount = people.Count((p) => p.IsInfected);
 
-            int TotalCount = people.Count -1;
+            //int TotalCount = people.Count -1;
             float percent = (float)ConvertedCount / WinTarget;
 
             ConvertedPercent = (int)(percent * 100f);

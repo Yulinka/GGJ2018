@@ -14,7 +14,8 @@ public class HintBubble : MonoBehaviour
     private Image no;
 	private Image normalBubble;
 	private Image shoutBubble;
-    private Image eagle;
+	private Image eagle;
+	private Image dove;
     private Image dots;
 
 	private void Start ()
@@ -25,7 +26,8 @@ public class HintBubble : MonoBehaviour
         hat = transform.Find("Hat").gameObject.GetComponent<Image>();
         clothes = transform.Find("Clothing").gameObject.GetComponent<Image>();
         glasses = transform.Find("Glasses").gameObject.GetComponent<Image>();
-        eagle = transform.Find("Eagle").gameObject.GetComponent<Image>();
+		eagle = transform.Find("Eagle").gameObject.GetComponent<Image>();
+		dove = transform.Find("Dove").gameObject.GetComponent<Image>();
         dots = transform.Find("Dots").gameObject.GetComponent<Image>();
 
         clothesColors = new Dictionary<BodyClothesState, Color>{
@@ -60,7 +62,8 @@ public class HintBubble : MonoBehaviour
         clothes.enabled = false;
         glasses.enabled = false;
         dots.enabled = false;
-        eagle.enabled = false;
+		eagle.enabled = false;
+		dove.enabled = false;
     }
 
     private void startShow()
@@ -109,6 +112,7 @@ public class HintBubble : MonoBehaviour
         resetHint();
         startShow();
 
+		// TODO: Generalize this into startShow()
 		normalBubble.enabled = false;
 		shoutBubble.enabled = true;
         shoutBubble.color = Color.red;
@@ -124,6 +128,13 @@ public class HintBubble : MonoBehaviour
         showTime = float.MaxValue;
     }
 
+	public void ShowWin(bool isAgent)
+	{
+		if (!isAgent)
+			ShowDoveHint();
+		showTime = float.MaxValue;
+	}
+
     public void ShowFascistHint()
     {
         resetHint();
@@ -137,4 +148,11 @@ public class HintBubble : MonoBehaviour
         startShow();
         dots.enabled = true;
     }
+
+	public void ShowDoveHint()
+	{
+		resetHint();
+		startShow();
+		dove.enabled = true;
+	}
 }
