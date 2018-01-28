@@ -4,16 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class HintBubble : MonoBehaviour {
-
+public class HintBubble : MonoBehaviour
+{
+    private float showTime;
+    private Dictionary<BodyClothesState, Color> clothesColors;
     private Image hat;
     private Image clothes;
     private Image glasses;
     private Image no;
     private Image bubble;
-    private float showTime;
-
-    private Dictionary<BodyClothesState, Color> clothesColors;
+    private Image eagle;
+    private Image dots;
 
 	private void Start ()
     {
@@ -22,6 +23,8 @@ public class HintBubble : MonoBehaviour {
         hat = transform.Find("Hat").gameObject.GetComponent<Image>();
         clothes = transform.Find("Clothing").gameObject.GetComponent<Image>();
         glasses = transform.Find("Glasses").gameObject.GetComponent<Image>();
+        eagle = transform.Find("Eagle").gameObject.GetComponent<Image>();
+        dots = transform.Find("Dots").gameObject.GetComponent<Image>();
 
         clothesColors = new Dictionary<BodyClothesState, Color>{
             {BodyClothesState.Red, Color.red},
@@ -46,11 +49,14 @@ public class HintBubble : MonoBehaviour {
 
     private void resetHint()
     {
+        bubble.color = Color.white;
         bubble.enabled = false;
         no.enabled = false;
         hat.enabled = false;
         clothes.enabled = false;
         glasses.enabled = false;
+        dots.enabled = false;
+        eagle.enabled = false;
     }
 
     private void startShow()
@@ -92,5 +98,28 @@ public class HintBubble : MonoBehaviour {
 
         if (state == BodyGlassesState.None)
             no.enabled = true;
+    }
+
+    public void ShowFascistConvert()
+    {
+        resetHint();
+        startShow();
+
+        bubble.color = Color.red;
+        eagle.enabled = true;
+    }
+
+    public void ShowFascistHint()
+    {
+        resetHint();
+        startShow();
+        eagle.enabled = true;
+    }
+
+    public void ShowDotDotDot()
+    {
+        resetHint();
+        startShow();
+        dots.enabled = true;
     }
 }

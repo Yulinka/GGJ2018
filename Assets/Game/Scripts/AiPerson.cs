@@ -31,6 +31,8 @@ public class AiPerson : MonoBehaviour
     public float InfectMinTime = 7f;
     public float StandMaxTime = 5f;
     public float StandMinTime = 3f;
+    public float ShoutMinTime = 5f;
+    public float ShoutMaxTime = 15f;
     public BodyConfig BodyConfig;
 
     private StateMachine<AiPersonState> states;
@@ -41,6 +43,7 @@ public class AiPerson : MonoBehaviour
     private Activity activity;
     private float infectedTime;
     private float activityTime;
+    private float shoutTime;
     private float startingActivityTime;
     private PlayerController player;
     private bool didInfect;
@@ -95,7 +98,7 @@ public class AiPerson : MonoBehaviour
             talkedTo.Remove(joiner);
 
         talkedTo.Add(joiner);
-        ShowHintAbout(joiner);
+        //ShowHintAbout(joiner);
     }
 
     public void ShowHintAbout(AiPerson target)
@@ -113,12 +116,21 @@ public class AiPerson : MonoBehaviour
 
     private void Start()
     {
-        ConversationMaxTime = 8f;
-        ConversationMinTime = 4f;
-        StandMaxTime = 3f;
-        StandMinTime = 2f;
-        InfectMaxTime = 3f;
-        InfectMinTime = 1f;
+        // FOR TESTING
+        //ConversationMaxTime = 8f;
+        //ConversationMinTime = 4f;
+        //StandMaxTime = 3f;
+        //StandMinTime = 2f;
+        //InfectMaxTime = 3f;
+        //InfectMinTime = 1f;
+
+        // FOR RELEASE
+        ConversationMaxTime = 20f;
+        ConversationMinTime = 8f;
+        StandMaxTime = 5f;
+        StandMinTime = 10f;
+        InfectMaxTime = 15f;
+        InfectMinTime = 8f;
 
         talkedTo = new List<AiPerson>();
 
@@ -181,6 +193,17 @@ public class AiPerson : MonoBehaviour
             Debug.DrawRay(transform.position + c, a - c, color);
             Debug.DrawRay(transform.position + b, c - b, color);
         }
+
+        if(IsConverted)
+        {
+            shoutTime -= Time.deltaTime;
+
+            if(shoutTime <= 0)
+            {
+                shoutTime = UnityEngine.Random.Range(ShoutMinTime, ShoutMaxTime);
+                hint.ShowFascistHint();
+            }
+        }
     }
 
     private void TickInfected()
@@ -196,7 +219,11 @@ public class AiPerson : MonoBehaviour
         infectedTime -= Time.deltaTime;
 
         if (infectedTime <= 0)
+        {
             IsConverted = true;
+            shoutTime = UnityEngine.Random.Range(ShoutMinTime, ShoutMaxTime);
+            hint.ShowFascistConvert();
+        }
     }
 
     private void PickNextActivity()
@@ -310,6 +337,7 @@ public class AiPerson : MonoBehaviour
         startingActivityTime = activityTime;
 
         activity.Join(this);
+        hint.ShowDotDotDot();
 
         //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
     }

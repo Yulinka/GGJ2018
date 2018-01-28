@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +10,10 @@ public class GameManager : MonoBehaviour
     public int InfectedCount = 0;
     public int ConvertedCount = 0;
     public int ConvertedPercent = 0;
+    public Slider Slider;
+
+    private float targetSlider;
+    private bool hasLost = false;
 
     void Start ()
     {
@@ -16,12 +21,28 @@ public class GameManager : MonoBehaviour
             .FindGameObjectsWithTag("Person")
             .Select((o) => o.GetComponent<AiPerson>())
             .ToList());
+
+        Slider = GameObject.FindObjectOfType<Slider>();
+        Slider.maxValue = 0.5f;
 	}
 	
 	void Update ()
     {
         CalculateScore();
+
+        float increment = 0.05f * Time.deltaTime;
+        Slider.value = Mathf.Clamp(Slider.value + increment, 0, targetSlider);
+
+        if (Slider.value >= 0.5f && !hasLost)
+            OnLose();
 	}
+
+    private void OnLose()
+    {
+        hasLost = true;
+        Debug.LogError("YOU LOST");
+        Application.Quit();
+    }
 
     private void CalculateScore()
     {
@@ -33,7 +54,10 @@ public class GameManager : MonoBehaviour
         {
             ConvertedCount = people.Count((p) => p.IsConverted);
             InfectedCount = people.Count((p) => p.IsInfected);
-            ConvertedPercent = (int)(((float)ConvertedCount / (float)people.Count) * 100f);
+
+            float percent = (float)ConvertedCount / (float)people.Count;
+            ConvertedPercent = (int)(percent * 100f);
+            targetSlider = percent;
         }
     }
 }
