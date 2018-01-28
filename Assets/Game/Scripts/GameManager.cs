@@ -13,10 +13,12 @@ public class GameManager : MonoBehaviour
     public int WinTarget = 15;
     public Slider Slider;
     public PlayerController Player;
+    public float IncrementSpeed = 0.05f;
 
     public AiPerson SpawnTemplate;
     public int SpawnCount = 40;
     public int AgentSpawnCount = 1;
+
 
     public Transform SpawnPoint;
 
@@ -45,14 +47,14 @@ public class GameManager : MonoBehaviour
             .ToList());
 
         Slider = GameObject.FindObjectOfType<Slider>();
-        Slider.maxValue = 0.5f;
 	}
 
 	private void Update ()
     {
-        CalculateScore();
+        if (!hasLost)
+            CalculateScore();
 
-        float increment = 0.05f * Time.deltaTime;
+        float increment = IncrementSpeed * Time.deltaTime;
         Slider.value = Mathf.Clamp(Slider.value + increment, 0, targetSlider);
 
         if (ConvertedCount >= WinTarget && !hasLost)
@@ -65,8 +67,18 @@ public class GameManager : MonoBehaviour
 
         Player.enabled = false;
 
+        targetSlider = 1;
+        IncrementSpeed = 1;
+
         foreach (var p in people) {
             p.Hint.ShowLose(p.IsAgent);
+
+            if (p.IsAgent)
+            {
+                var lookAt = Camera.main.GetComponent<LookAtTarget>();
+                lookAt.Target = p.transform;
+            }
+
             p.OnLose();
         }
     }
