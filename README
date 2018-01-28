@@ -1,26 +1,13 @@
-[TODO]
-[ ] Clue System
-    - Clothing color
-    - Hat or no hat
-    - Accessory or no accessory
-    - Talking bubbles above characters head in conversation
-    - Talking bubble that contains clue about previously spoken to person (always choses fascist if fascist)
-
-[ ] Agent Infection System
-    - Agent must be notified of people in his conversation
-    - Must decide to call AiPerson.Infect() on someone in his conversation
-    - Infected person must keep track of themselves being infected
-    - Must turn fascist after a set amount of time
-
-[ ] Global game state manager
-    - Keeps track of agent
-    - Gets notified when someone gets infected
-    - Gets notified when someone turns fascist
-
-[ ] Add more behaviors
-    - Smoking (StandAt)
-    - Smokign particle (low)
-    - Location based activity (StandAtLocation)
-    - Add environment art and activities
-    - Seek conversations with non infected
-    - Agent wont infect people if the player is near by (maybe tries to leave conversation if possible)
+- Butler
+- Butler information
+- Title overlay on game start
+- Different icon for win condition
+- Game should pause once you win
+- Simple CCTV shader
+- Smoking
+- 3D Map Props
+- Conversation Activity 3D audio
+- Piano 3D Audio
+- Butler 3D Audio
+- Infect audio queue
+- Crowd audio

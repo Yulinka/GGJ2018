@@ -109,9 +109,12 @@ public class HintBubble : MonoBehaviour
         eagle.enabled = true;
     }
 
-    public void ShowLose()
+    public void ShowLose(bool isAgent)
     {
-        ShowFascistConvert();
+        if (isAgent)
+            ShowFascistConvert();
+        else
+            ShowFascistHint();
         showTime = float.MaxValue;
     }
 
