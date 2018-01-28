@@ -262,9 +262,9 @@ public class AiPerson : MonoBehaviour
     {
         Activity newActivity = null;
 
-        if(UnityEngine.Random.value <= 0.1f)
+        if(UnityEngine.Random.value <= 0.3f)
             newActivity = director.FindActivity(this, typeof(StandAt));
-        else if (UnityEngine.Random.value > 0.1f)
+        else if (UnityEngine.Random.value > 0.3f)
             newActivity = director.FindActivity(this, typeof(Conversation));
 
         if(newActivity == null || !newActivity.CanJoin(this) || newActivity == activity)
