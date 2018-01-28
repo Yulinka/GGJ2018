@@ -12,6 +12,13 @@ public enum BodyState
 //    SkinnyMale
 }
 
+public enum BodyFaceState
+{
+	One,
+	Two,
+	Three,
+}
+
 public enum BodySkinState
 {
     White,
@@ -65,6 +72,7 @@ public enum BodyClothesState
 public class BodyConfig
 {
     public BodyState Body;
+	public BodyFaceState Face;
     public BodySkinState Skin;
     public BodyGlassesState Glasses;
 	public BodyHatState Hat;
@@ -97,6 +105,7 @@ public class BodyGenerator : MonoBehaviour
 
 		while (true) {
 			config.Body = this.selectRandomFromEnum<BodyState> ();
+			config.Face = this.selectRandomFromEnum<BodyFaceState> ();
 			config.Skin = this.selectRandomFromEnum<BodySkinState> ();
 			config.Glasses = this.selectRandomFromEnum<BodyGlassesState> ();
 			config.Hat = this.selectRandomFromEnum<BodyHatState> ();
@@ -108,11 +117,11 @@ public class BodyGenerator : MonoBehaviour
 			{
 				knownConfigs.Add(config.hashKey (), config);
 
-				string bodyPath = this.buildBodySpritePath(config);
-				string hairPath = this.buildHairSpritePath(config);
-				string clothesPath = this.buildClothesSpritePath(config);
-				string hatPath = this.buildHatSpritePath(config);
-				string glassesPath = this.buildGlassesSpritePath(config);
+//				string bodyPath = this.buildBodySpritePath(config);
+//				string hairPath = this.buildHairSpritePath(config);
+//				string clothesPath = this.buildClothesSpritePath(config);
+//				string hatPath = this.buildHatSpritePath(config);
+//				string glassesPath = this.buildGlassesSpritePath(config);
 
 				config.BodySprite = Resources.Load<Sprite> (this.buildBodySpritePath (config));
 				config.HairSprite = Resources.Load<Sprite> (this.buildHairSpritePath (config));
@@ -143,7 +152,7 @@ public class BodyGenerator : MonoBehaviour
 	private string buildBodySpritePath(BodyConfig config)
 	{
 		return "Characters/" + this.bodyTypeToPath (config.Body)
-			+ "/bases/face1" + this.skinTypeToPath (config.Skin);
+			+ "/bases/face" + this.faceTypeToPath(config.Face) + this.skinTypeToPath(config.Skin);
 	}
 
 	private string buildHairSpritePath(BodyConfig config)
@@ -203,6 +212,20 @@ public class BodyGenerator : MonoBehaviour
 //			return "skinnygent";
 //		case BodyState.HotMale:
 //			return "hotgent";
+		default:
+			return "";
+		}
+	}
+
+	private string faceTypeToPath(BodyFaceState state)
+	{
+		switch (state) {
+		case BodyFaceState.One:
+			return "1";
+		case BodyFaceState.Two:
+			return "2";
+		case BodyFaceState.Three:
+			return "3";
 		default:
 			return "";
 		}
