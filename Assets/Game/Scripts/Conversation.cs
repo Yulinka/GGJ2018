@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Conversation : Activity
 {
-    public float RingScale;
     public float ActorSize;
     public float RingPadding;
 
@@ -13,9 +12,8 @@ public class Conversation : Activity
 
     private void Start()
     {
-        RingScale = 2f;
         ActorSize = 0.75f;
-        RingPadding = 0.4f;
+        RingPadding = 0.1f;
     }
 
     public override string GetName()

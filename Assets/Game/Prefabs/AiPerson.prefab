@@ -73,6 +73,7 @@ GameObject:
   - component: {fileID: 114331829275396638}
   - component: {fileID: 195106491762044850}
   - component: {fileID: 114886895152347450}
+  - component: {fileID: 136716759618533550}
   m_Layer: 0
   m_Name: AiPerson
   m_TagString: Person
@@ -275,13 +276,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  ClothsSprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  ClothesSprites: []
   HairSprites:
   - {fileID: 0}
   - {fileID: 0}
@@ -291,7 +286,7 @@ MonoBehaviour:
   bodyIndex: 0
   glassesIndex: 0
   hatIndex: 0
-  clothsIndex: 0
+  clothesIndex: 0
   hairIndex: 0
 --- !u!114 &114378985910537058
 MonoBehaviour:
@@ -395,6 +390,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5f759af4dc44d4884cc61c6b503883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &136716759618533550
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1292677300234746}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 2.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!195 &195106491762044850
 NavMeshAgent:
   m_ObjectHideFlags: 1

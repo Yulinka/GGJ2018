@@ -2,12 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class LookAtTarget : MonoBehaviour
 {
     public Transform Target;
     public bool Animate = false;
 
-	void Update ()
+    public Material RenderMaterial;
+
+    void Start()
+    {
+    }
+
+    private void OnRenderImage(RenderTexture source, RenderTexture destination)
+    {
+        if (RenderMaterial != null)
+            Graphics.Blit(source, destination, RenderMaterial);
+        else
+            Graphics.Blit(source, destination);
+    }
+
+    void Update ()
     {
         if (!Target)
             return;

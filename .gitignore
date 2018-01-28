@@ -1,6 +1,7 @@
 *.sln.DotSettings.user
 *.sln
 *.csproj
+*.csproj.user
 *.userprefs
 
 /.vs/

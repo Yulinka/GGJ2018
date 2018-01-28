@@ -7,10 +7,6 @@ public class LookAtCamera : MonoBehaviour
 {
     public bool AxisAligned = false;
 
-	void Start ()
-    {
-	}
-	
 	void Update ()
     {
         var target = Camera.main.transform.position;
