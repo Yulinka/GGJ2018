@@ -138,10 +138,18 @@ public class AiPerson : MonoBehaviour
         Image glasses = characterCanvas.transform.Find("Glasses").gameObject.GetComponent<Image>();
         Image clothes = characterCanvas.transform.Find("Clothes").gameObject.GetComponent<Image>();
 
-        body.sprite = config.BodySprite;
-        hat.sprite = config.HatSprite;
-        hair.sprite = config.HairSprite;
-        glasses.sprite = config.GlassesSprite;
+		if (config.Hat == BodyHatState.None)
+			hat.enabled = false;
+		else
+        	hat.sprite = config.HatSprite;
+
+		if (config.Glasses == BodyGlassesState.None)
+			glasses.enabled = false;
+		else
+        	glasses.sprite = config.GlassesSprite;
+
+		body.sprite = config.BodySprite;
+		hair.sprite = config.HairSprite;
         clothes.sprite = config.ClothesSprite;
     }
 

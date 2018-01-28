@@ -242,8 +242,7 @@ public class BodyGenerator : MonoBehaviour
 		case BodyHatColorState.Silver:
 			return "silver";
 		default:
-			//return "";
-			return "black";
+			return "";
 		}
 	}
 
@@ -253,8 +252,7 @@ public class BodyGenerator : MonoBehaviour
 		case BodyGlassesState.Glasses:
 			return "glasses";
 		default:
-			//return "";
-			return "glasses";
+			return "";
 		}
 	}
 
