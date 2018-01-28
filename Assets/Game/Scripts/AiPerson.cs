@@ -36,13 +36,13 @@ public class AiPerson : MonoBehaviour
 	public Sprite[] BodySprites;
 	public Sprite[] GlassesSprites;
 	public Sprite[] HatSprites;
-	public Sprite[] ClothsSprites;
+	public Sprite[] ClothesSprites;
 	public Sprite[] HairSprites;
 
 	public int bodyIndex;
 	public int glassesIndex;
 	public int hatIndex;
-	public int clothsIndex;
+	public int clothesIndex;
 	public int hairIndex;
 	private SpriteRenderer bodyRenderer;
 	private SpriteRenderer glassesRenderer;
@@ -55,7 +55,7 @@ public class AiPerson : MonoBehaviour
     private NavMeshAgent navAgent;
     private List<AiPerson> talkedTo;
     private Director director;
-    private Activity activity;
+    public Activity Activity { get; private set; }
     private float infectedTime;
     private float activityTime;
     private float startingActivityTime;
@@ -66,8 +66,6 @@ public class AiPerson : MonoBehaviour
     {
         if (states.State != AiPersonState.Conversation)
             throw new Exception("Requires AiState.Conversation");
-
-        talkedTo = new List<AiPerson>();
 
         navDest = location;
         states.ChangeState(AiPersonState.Walking);
@@ -84,6 +82,7 @@ public class AiPerson : MonoBehaviour
         IsInfected = true;
         InfectedBy = infectedBy;
         infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
+        name += " (infected)";
     }
 
     public void Interrogate()
@@ -119,6 +118,8 @@ public class AiPerson : MonoBehaviour
         StandMinTime = 2f;
         InfectMaxTime = 3f;
         InfectMinTime = 1f;
+
+        talkedTo = new List<AiPerson>();
 
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.updatePosition = false;
@@ -159,12 +160,12 @@ public class AiPerson : MonoBehaviour
         if (IsInfected)
         {
             var color = IsConverted ? Color.magenta : Color.cyan;
-            var a = transform.position + new Vector3(0, 0.1f, 0.1f);
-            var b = transform.position + new Vector3(-0.1f, 0.1f, -0.1f);
-            var c = transform.position + new Vector3(-0.1f, 0.1f, -0.1f);
-            Debug.DrawRay(a, b, color);
-            Debug.DrawRay(b, c, color);
-            Debug.DrawRay(c, a, color);
+            var a = new Vector3(0, 0.1f, 0.1f);
+            var b = new Vector3(0.1f, 0.1f, -0.1f);
+            var c = new Vector3(-0.1f, 0.1f, -0.1f);
+            Debug.DrawRay(transform.position + a, b - a, color);
+            Debug.DrawRay(transform.position + c, a - c, color);
+            Debug.DrawRay(transform.position + b, c - b, color);
         }
     }
 
@@ -173,7 +174,7 @@ public class AiPerson : MonoBehaviour
         if (!IsInfected || IsConverted)
             return;
 
-        bool inActivityWithAgent = activity.Participants.Contains(InfectedBy);
+        bool inActivityWithAgent = Activity.Participants.Contains(InfectedBy);
 
         if (inActivityWithAgent)
             return;
@@ -193,16 +194,16 @@ public class AiPerson : MonoBehaviour
         else if (UnityEngine.Random.value > 0.1f)
             newActivity = director.FindActivity(this, typeof(Conversation));
 
-        if(newActivity == null || !newActivity.CanJoin(this) || newActivity == activity)
+        if(newActivity == null || !newActivity.CanJoin(this) || newActivity == Activity)
             return;
 
         //Debug.Log("Picking new activity: " + activity.GetName());
-        if(activity != null)
-            activity.Leave(this);
+        if(Activity != null)
+            Activity.Leave(this);
 
-        activity = newActivity;
-        activity.Reserve(this);
-        navDest = activity.transform.position;
+        Activity = newActivity;
+        Activity.Reserve(this);
+        navDest = Activity.transform.position;
         states.ChangeState(AiPersonState.Walking);
     }
 
@@ -226,11 +227,11 @@ public class AiPerson : MonoBehaviour
 
     private void InfectParticipant(Activity searchIn)
     {
-        var activityRadius = Vector3.Distance(transform.position, activity.transform.position);
+        var activityRadius = Vector3.Distance(transform.position, Activity.transform.position);
         var playerDistance = Vector3.Distance(transform.position, player.transform.position);
 
-        if (playerDistance < activityRadius + 2)
-            ;// return; //player is in viscinity
+        if (playerDistance < activityRadius + 1)
+            return; //player is in viscinity
 
         AiPerson target = (searchIn.Participants
             .Where((p) => !p.IsInfected && p != this)
@@ -256,8 +257,8 @@ public class AiPerson : MonoBehaviour
 
     private void Walking_Update()
     {
-        if (navAgent.remainingDistance <= activity.GetApproachDistance())
-            StartActivity(activity);
+        if (navAgent.remainingDistance <= Activity.GetApproachDistance())
+            StartActivity(Activity);
     }
 
     private void Walking_Exit()
@@ -272,7 +273,7 @@ public class AiPerson : MonoBehaviour
             StandMaxTime);
         startingActivityTime = activityTime;
 
-        activity.Join(this);
+        Activity.Join(this);
     }
 
     private void StandAt_Update()
@@ -294,18 +295,18 @@ public class AiPerson : MonoBehaviour
         startingActivityTime = activityTime;
 
         //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
-        activity.Join(this);
+        Activity.Join(this);
     }
 
     private void Conversation_Update()
     {
         activityTime -= Time.deltaTime;
-        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
+        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, Activity.Color);
 
         if (activityTime <= 0) {
             if (IsAgent && !didInfect)
             {
-                InfectParticipant(activity);
+                InfectParticipant(Activity);
                 didInfect = true;
             }
 
@@ -321,7 +322,7 @@ public class AiPerson : MonoBehaviour
 
     private void ConversationMoving_Update()
     {
-        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
+        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, Activity.Color);
         //transform.position = navDest;
         //navAgent.Warp(navDest);
 
