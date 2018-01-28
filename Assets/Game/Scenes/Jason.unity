@@ -2342,23 +2342,6 @@ MonoBehaviour:
   MaxParticipants: 1
   Participants: []
   Reserved: []
---- !u!1 &1890120513 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1162283197074134, guid: 6047c9339920e4753a912d1679782e42,
-    type: 2}
-  m_PrefabInternal: {fileID: 2019410859}
---- !u!114 &1890120514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1890120513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e814520cc4d04464abfadcf1c39318c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Target: {fileID: 330839353}
 --- !u!1 &1902393181
 GameObject:
   m_ObjectHideFlags: 0
@@ -2522,36 +2505,11 @@ Prefab:
       propertyPath: Target
       value: 
       objectReference: {fileID: 1557724802}
-    - target: {fileID: 4176518192527900, guid: 6047c9339920e4753a912d1679782e42, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0.20941187
-      objectReference: {fileID: 0}
-    - target: {fileID: 4176518192527900, guid: 6047c9339920e4753a912d1679782e42, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: -0.0016839807
-      objectReference: {fileID: 0}
-    - target: {fileID: 4176518192527900, guid: 6047c9339920e4753a912d1679782e42, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0.0003606424
-      objectReference: {fileID: 0}
-    - target: {fileID: 4176518192527900, guid: 6047c9339920e4753a912d1679782e42, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 0.97782606
-      objectReference: {fileID: 0}
-    - target: {fileID: 4753188972893246, guid: 6047c9339920e4753a912d1679782e42, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114436764713410178, guid: 6047c9339920e4753a912d1679782e42,
+    - target: {fileID: 114491391575213012, guid: 6047c9339920e4753a912d1679782e42,
         type: 2}
-      propertyPath: Animate
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114436764713410178, guid: 6047c9339920e4753a912d1679782e42,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: Target
+      value: 
+      objectReference: {fileID: 330839353}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6047c9339920e4753a912d1679782e42, type: 2}
   m_IsPrefabParent: 0
