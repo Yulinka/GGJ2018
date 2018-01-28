@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Interrogate : MonoBehaviour
 {
-    public Color HighlightColor = Color.yellow;
+    public GameObject Highlight;
     public float SearchRadius = 2;
+
+    GameObject currentHighlight;
 
     void DrawTriangle(Vector3 origin, Color color)
     {
@@ -32,15 +34,36 @@ public class Interrogate : MonoBehaviour
                     Physics.Raycast(ray, out hit);
                     bool isHovering = hit.transform == ai.transform;
                     DrawTriangle(ai.transform.position,
-                        isHovering ? Color.red : HighlightColor);
+                        isHovering ? Color.red : Color.yellow);
 
-                    if (isHovering && Input.GetMouseButtonDown(0))
+                    if (isHovering)
                     {
-                        ai.Interrogate();
-                        break;
+                        if (currentHighlight == null)
+                            currentHighlight = Instantiate(Highlight);
+
+                        currentHighlight.transform.position
+                            = ai.transform.position + new Vector3(0, 0.1f, 0);
+
+                        if (Input.GetMouseButtonDown(0))
+                            ai.Interrogate();
+
+                        return;
                     }
                 }
             }
+        }
+
+        if (currentHighlight != null)
+        {
+            var spin = currentHighlight.GetComponentInChildren<Spin>();
+            if (spin != null)
+            {
+                spin.FadingOut = true;
+                Destroy(currentHighlight, spin.FadeTime);
+            }
+            else
+                Destroy(currentHighlight);
+            currentHighlight = null;
         }
     }
 }

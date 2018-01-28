@@ -139,7 +139,6 @@ public class BodyGenerator : MonoBehaviour
         BodyConfig config = GetNextConfig();
         //config.ChooseSprites();
         return config;
-        
     }
 
 	private T selectRandomFromEnum<T>()
