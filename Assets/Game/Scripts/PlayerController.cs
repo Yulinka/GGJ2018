@@ -7,11 +7,13 @@ public class PlayerController : MonoBehaviour
     public float Speed = 2f;
 
     private CharacterController characterController;
+	private GameManager gameManager;
 	private SpriteRenderer spriteRenderer;
 
 	private void Start ()
     {
         characterController = GetComponent<CharacterController>();
+		gameManager = GameObject.FindGameObjectWithTag ("Director").GetComponent<GameManager> ();
 		spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
 		if (UnityEngine.Random.value < 0.5)
@@ -22,12 +24,14 @@ public class PlayerController : MonoBehaviour
 	
 	private void Update ()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+		if (gameManager.gameStarted) {
+			float horizontal = Input.GetAxis ("Horizontal");
+			float vertical = Input.GetAxis ("Vertical");
 
-        Vector3 moveDir = calculateMoveDir(horizontal, vertical);
+			Vector3 moveDir = calculateMoveDir (horizontal, vertical);
 
-        characterController.SimpleMove(moveDir * Speed);
+			characterController.SimpleMove (moveDir * Speed);
+		}
 	}
 
     private Vector3 calculateMoveDir(float horizontal, float vertical)

@@ -12,18 +12,22 @@ public class HintBubble : MonoBehaviour
     private Image clothes;
     private Image glasses;
     private Image no;
-    private Image bubble;
-    private Image eagle;
+	private Image normalBubble;
+	private Image shoutBubble;
+	private Image eagle;
+	private Image dove;
     private Image dots;
 
 	private void Start ()
     {
-        bubble = transform.Find("Bubble").gameObject.GetComponent<Image>();
+		normalBubble = transform.Find("Bubble").gameObject.GetComponent<Image>();
+		shoutBubble = transform.Find("Shout").gameObject.GetComponent<Image>();
         no = transform.Find("No").gameObject.GetComponent<Image>();
         hat = transform.Find("Hat").gameObject.GetComponent<Image>();
         clothes = transform.Find("Clothing").gameObject.GetComponent<Image>();
         glasses = transform.Find("Glasses").gameObject.GetComponent<Image>();
-        eagle = transform.Find("Eagle").gameObject.GetComponent<Image>();
+		eagle = transform.Find("Eagle").gameObject.GetComponent<Image>();
+		dove = transform.Find("Dove").gameObject.GetComponent<Image>();
         dots = transform.Find("Dots").gameObject.GetComponent<Image>();
 
         clothesColors = new Dictionary<BodyClothesState, Color>{
@@ -42,26 +46,29 @@ public class HintBubble : MonoBehaviour
     {
         showTime -= Time.deltaTime;
 
-        if (showTime <= 0 && bubble.enabled)
+		if (showTime <= 0 && (normalBubble.enabled || shoutBubble.enabled))
             resetHint();
 
     }
 
     private void resetHint()
     {
-        bubble.color = Color.white;
-        bubble.enabled = false;
+        normalBubble.color = Color.white;
+		normalBubble.enabled = false;
+		shoutBubble.color = Color.white;
+		shoutBubble.enabled = false;
         no.enabled = false;
         hat.enabled = false;
         clothes.enabled = false;
         glasses.enabled = false;
         dots.enabled = false;
-        eagle.enabled = false;
+		eagle.enabled = false;
+		dove.enabled = false;
     }
 
     private void startShow()
     {
-        bubble.enabled = true;
+        normalBubble.enabled = true;
         showTime = 5f;
     }
 
@@ -105,7 +112,10 @@ public class HintBubble : MonoBehaviour
         resetHint();
         startShow();
 
-        bubble.color = Color.red;
+		// TODO: Generalize this into startShow()
+		normalBubble.enabled = false;
+		shoutBubble.enabled = true;
+        shoutBubble.color = Color.red;
         eagle.enabled = true;
     }
 
@@ -117,6 +127,13 @@ public class HintBubble : MonoBehaviour
             ShowFascistHint();
         showTime = float.MaxValue;
     }
+
+	public void ShowWin(bool isAgent)
+	{
+		if (!isAgent)
+			ShowDoveHint();
+		showTime = float.MaxValue;
+	}
 
     public void ShowFascistHint()
     {
@@ -131,4 +148,11 @@ public class HintBubble : MonoBehaviour
         startShow();
         dots.enabled = true;
     }
+
+	public void ShowDoveHint()
+	{
+		resetHint();
+		startShow();
+		dove.enabled = true;
+	}
 }

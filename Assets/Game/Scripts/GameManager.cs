@@ -18,21 +18,25 @@ public class GameManager : MonoBehaviour
 
     public AiPerson SpawnTemplate;
     public int SpawnCount = 40;
-    public int AgentSpawnCount = 1;
+	public int AgentSpawnCount = 1;
+	public bool gameStarted = false;
 
 
     public Transform SpawnPoint;
 
     private float targetSlider;
-	private bool gameStarted = false;
     private bool hasLost = false;
+    private bool gameIsOver = false;
 
     public void EndGame(AiPerson target)
     {
+        if (gameIsOver || hasLost)
+            return;
+        
         if (target.IsAgent)
-            OnWin();
+            StartCoroutine(OnWin());
         else
-            OnLose();
+            StartCoroutine(OnLose());
     }
 
     private void Start ()
@@ -40,14 +44,15 @@ public class GameManager : MonoBehaviour
         Slider = GameObject.FindObjectOfType<Slider>();
         Slider.minValue = 0f;
         Slider.maxValue = 1f;
+        Slider.gameObject.SetActive(false);
 	}
 
 	private void Update ()
     {
-		if (!gameStarted)
-		{
-			if (Input.GetMouseButtonDown (0) || Input.GetMouseButtonDown (1) || Input.GetKeyDown (KeyCode.Space))
-				StartGame();
+        if (!gameStarted)
+        {
+            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space))
+                StartCoroutine(StartGame());
 		}
 
         if (!hasLost)
@@ -57,10 +62,10 @@ public class GameManager : MonoBehaviour
         Slider.value = Mathf.Clamp(Slider.value + increment, 0, targetSlider);
 
         if (ConvertedCount >= WinTarget && !hasLost)
-            OnLose();
+            StartCoroutine(OnLose());
 	}
 
-	private void StartGame()
+    IEnumerator StartGame()
 	{
 		GeneratePartygoers(SpawnCount, AgentSpawnCount);
 
@@ -75,16 +80,32 @@ public class GameManager : MonoBehaviour
 		images[2].CrossFadeAlpha (0, 2.0f, false);
 
 		gameStarted = true;
+
+        yield return new WaitForSeconds(2.0f);
+        Slider.gameObject.SetActive(true);
+
 	}
 
 
-    private void OnWin()
+    private IEnumerator OnWin()
     {
-        foreach (var p in people)
-            p.Hint.ShowDotDotDot();
+        Player.enabled = false;
+
+		foreach (var p in people)
+        {
+            if (p.IsAgent)
+                p.Hint.ShowLose(true);
+            else
+                p.Hint.ShowWin(false);
+
+            p.OnWin();
+        }
+
+        yield return new WaitForSeconds(8.0f);
+        Application.LoadLevel(Application.loadedLevel);
     }
 
-    private void OnLose()
+    private IEnumerator OnLose()
     {
         hasLost = true;
 
@@ -97,10 +118,13 @@ public class GameManager : MonoBehaviour
             p.Hint.ShowLose(p.IsAgent);
 
             if (p.IsAgent)
-                Camera.main.GetComponent<LookAtTarget>().Target = p.transform;
+                Camera.main.GetComponentInParent<NewCameraSystem>().LookAtAnimate(p.gameObject);
 
             p.OnLose();
         }
+
+        yield return new WaitForSeconds(8.0f);
+        Application.LoadLevel(Application.loadedLevel);
     }
 
     private void CalculateScore()
@@ -115,7 +139,7 @@ public class GameManager : MonoBehaviour
             ConvertedCount = people.Count((p) => p.IsConverted);
             InfectedCount = people.Count((p) => p.IsInfected);
 
-            int TotalCount = people.Count -1;
+            //int TotalCount = people.Count -1;
             float percent = (float)ConvertedCount / WinTarget;
 
             ConvertedPercent = (int)(percent * 100f);
