@@ -28,12 +28,8 @@ public class GameManager : MonoBehaviour
     public void EndGame(AiPerson target)
     {
         if (target.IsAgent)
-        {
-            Debug.Log("YOU WIN");
-
-            foreach (var p in people)
-                p.Hint.ShowDotDotDot();
-        } else
+            OnWin();
+        else
             OnLose();
     }
 
@@ -47,6 +43,8 @@ public class GameManager : MonoBehaviour
             .ToList());
 
         Slider = GameObject.FindObjectOfType<Slider>();
+        Slider.minValue = 0f;
+        Slider.maxValue = 1f;
 	}
 
 	private void Update ()
@@ -61,6 +59,13 @@ public class GameManager : MonoBehaviour
             OnLose();
 	}
 
+
+    private void OnWin()
+    {
+        foreach (var p in people)
+            p.Hint.ShowDotDotDot();
+    }
+
     private void OnLose()
     {
         hasLost = true;
@@ -74,10 +79,7 @@ public class GameManager : MonoBehaviour
             p.Hint.ShowLose(p.IsAgent);
 
             if (p.IsAgent)
-            {
-                var lookAt = Camera.main.GetComponent<LookAtTarget>();
-                lookAt.Target = p.transform;
-            }
+                Camera.main.GetComponent<LookAtTarget>().Target = p.transform;
 
             p.OnLose();
         }
@@ -88,6 +90,7 @@ public class GameManager : MonoBehaviour
         ConvertedCount = 0;
         InfectedCount = 0;
         ConvertedPercent = 0;
+        targetSlider = 0;
 
         if(people.Count > 0)
         {

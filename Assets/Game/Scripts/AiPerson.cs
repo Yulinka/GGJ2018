@@ -150,12 +150,10 @@ public class AiPerson : MonoBehaviour
 
         if(IsAgent)
         {
-            ConversationMaxTime = 10f;
-            ConversationMinTime = 8f;
+            ConversationMaxTime = 9f;
+            ConversationMinTime = 7f;
             StandMaxTime = 5f;
             StandMinTime = 10f;
-            InfectMaxTime = 9f;
-            InfectMinTime = 6f;
         }
 
         talkedTo = new List<AiPerson>();
