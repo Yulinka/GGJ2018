@@ -12,13 +12,15 @@ public class HintBubble : MonoBehaviour
     private Image clothes;
     private Image glasses;
     private Image no;
-    private Image bubble;
+	private Image normalBubble;
+	private Image shoutBubble;
     private Image eagle;
     private Image dots;
 
 	private void Start ()
     {
-        bubble = transform.Find("Bubble").gameObject.GetComponent<Image>();
+		normalBubble = transform.Find("Bubble").gameObject.GetComponent<Image>();
+		shoutBubble = transform.Find("Shout").gameObject.GetComponent<Image>();
         no = transform.Find("No").gameObject.GetComponent<Image>();
         hat = transform.Find("Hat").gameObject.GetComponent<Image>();
         clothes = transform.Find("Clothing").gameObject.GetComponent<Image>();
@@ -42,15 +44,17 @@ public class HintBubble : MonoBehaviour
     {
         showTime -= Time.deltaTime;
 
-        if (showTime <= 0 && bubble.enabled)
+		if (showTime <= 0 && (normalBubble.enabled || shoutBubble.enabled))
             resetHint();
 
     }
 
     private void resetHint()
     {
-        bubble.color = Color.white;
-        bubble.enabled = false;
+        normalBubble.color = Color.white;
+		normalBubble.enabled = false;
+		shoutBubble.color = Color.white;
+		shoutBubble.enabled = false;
         no.enabled = false;
         hat.enabled = false;
         clothes.enabled = false;
@@ -61,7 +65,7 @@ public class HintBubble : MonoBehaviour
 
     private void startShow()
     {
-        bubble.enabled = true;
+        normalBubble.enabled = true;
         showTime = 5f;
     }
 
@@ -105,7 +109,9 @@ public class HintBubble : MonoBehaviour
         resetHint();
         startShow();
 
-        bubble.color = Color.red;
+		normalBubble.enabled = false;
+		shoutBubble.enabled = true;
+        shoutBubble.color = Color.red;
         eagle.enabled = true;
     }
 
