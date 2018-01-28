@@ -10,11 +10,14 @@ public class HintBubble : MonoBehaviour {
     private Image clothes;
     private Image glasses;
     private Image no;
+    private Image bubble;
+    private float showTime;
 
     private Dictionary<BodyClothesState, Color> clothesColors;
 
 	private void Start ()
     {
+        bubble = transform.Find("Bubble").gameObject.GetComponent<Image>();
         no = transform.Find("No").gameObject.GetComponent<Image>();
         hat = transform.Find("Hat").gameObject.GetComponent<Image>();
         clothes = transform.Find("Clothing").gameObject.GetComponent<Image>();
@@ -25,41 +28,65 @@ public class HintBubble : MonoBehaviour {
             {BodyClothesState.Blue, Color.blue}
         };
 
-        GiveClothesHint(BodyClothesState.Red);
+        resetHint();
 	}
+
+    private void Update()
+    {
+        showTime -= Time.deltaTime;
+
+        if (showTime <= 0 && bubble.enabled)
+            resetHint();
+
+    }
 
     private void resetHint()
     {
+        bubble.enabled = false;
         no.enabled = false;
         hat.enabled = false;
         clothes.enabled = false;
         glasses.enabled = false;
     }
 
-    public void GiveClothesHint(BodyClothesState state)
+    private void startShow()
     {
-        resetHint();
-        clothes.enabled = true;
-        clothes.color = clothesColors[state];
-        
+        bubble.enabled = true;
+        showTime = 5f;
     }
 
-    public void GiveHatHint(BodyHatState state)
+    public void ShowNoHint()
     {
         resetHint();
+        startShow();
+        no.enabled = true;
+    }
+
+    public void ShowClothesHint(BodyClothesState state)
+    {
+        resetHint();
+        startShow();
+        clothes.enabled = true;
+        clothes.color = clothesColors[state];
+    }
+
+    public void ShowHatHint(BodyHatState state)
+    {
+        resetHint();
+        startShow();
         hat.enabled = true;
 
         if (state == BodyHatState.None)
             no.enabled = true;
     }
 
-    public void GiveGlassesHint(BodyGlassesState state)
+    public void ShowGlassesHint(BodyGlassesState state)
     {
         resetHint();
+        startShow();
         glasses.enabled = true;
 
         if (state == BodyGlassesState.None)
             no.enabled = true;
-
     }
 }

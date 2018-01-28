@@ -69,6 +69,7 @@ public class Conversation : Activity
             }
         }
         Participants.Insert(mini, participant);
+        notifyJoined(participant);
 
         DistributeParticipants();
     }

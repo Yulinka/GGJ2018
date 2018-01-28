@@ -31,7 +31,7 @@ public class AiPerson : MonoBehaviour
     public float InfectMinTime = 7f;
     public float StandMaxTime = 5f;
     public float StandMinTime = 3f;
-	public BodyConfig bodyConfig;
+    public BodyConfig BodyConfig;
 
     private StateMachine<AiPersonState> states;
     private Vector3 navDest = Vector3.zero;
@@ -44,6 +44,9 @@ public class AiPerson : MonoBehaviour
     private float startingActivityTime;
     private PlayerController player;
     private bool didInfect;
+    private Canvas hintCanvas;
+    private HintBubble hint;
+    private Canvas characterCanvas;
 
     public void MoveTo(Vector3 location)
     {
@@ -73,15 +76,17 @@ public class AiPerson : MonoBehaviour
     {
         if (talkedTo.Count == 0)
         {
+            hint.ShowNoHint();
             Debug.Log("Havent spoken to anyone");
         }
         else if (IsInfected)
         {
-            Debug.Log("INFECTED, AGENT", InfectedBy);
+            hint.ShowClothesHint(InfectedBy.BodyConfig.Clothes);
         }
         else
         {
             AiPerson lastSpokeTo = talkedTo.Last();
+            hint.ShowClothesHint(lastSpokeTo.BodyConfig.Clothes);
             Debug.Log("LAST SPOKE TO", lastSpokeTo);
         }
     }
@@ -92,6 +97,7 @@ public class AiPerson : MonoBehaviour
             talkedTo.Remove(joiner);
 
         talkedTo.Add(joiner);
+        hint.ShowClothesHint(joiner.BodyConfig.Clothes);
     }
 
     private void Start()
@@ -107,13 +113,18 @@ public class AiPerson : MonoBehaviour
 
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.updatePosition = false;
+        navAgent.updateRotation = false;
         navAgent.autoBraking = true;
 
         director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        characterCanvas = transform.Find("Canvas").gameObject.GetComponent<Canvas>();
 
-        bodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
-        ConstructCanvas(bodyConfig);
+        hintCanvas = transform.Find("HintContainer").transform.Find("Hint").gameObject.GetComponent<Canvas>();
+        hint = hintCanvas.GetComponent<HintBubble>();
+
+        BodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
+        ConstructCanvas(BodyConfig);
 
         states = StateMachine<AiPersonState>.Initialize(this);
         states.ChangeState(AiPersonState.Idle);
@@ -121,13 +132,11 @@ public class AiPerson : MonoBehaviour
 
     private void ConstructCanvas(BodyConfig config)
     {
-        Canvas canvas = transform.Find("Canvas").gameObject.GetComponent<Canvas>();
-
-        Image body = canvas.transform.Find("Body").gameObject.GetComponent<Image>();
-        Image hat = canvas.transform.Find("Hat").gameObject.GetComponent<Image>();
-        Image hair = canvas.transform.Find("Hair").gameObject.GetComponent<Image>();
-        Image glasses = canvas.transform.Find("Glasses").gameObject.GetComponent<Image>();
-        Image clothes = canvas.transform.Find("Clothes").gameObject.GetComponent<Image>();
+        Image body = characterCanvas.transform.Find("Body").gameObject.GetComponent<Image>();
+        Image hat = characterCanvas.transform.Find("Hat").gameObject.GetComponent<Image>();
+        Image hair = characterCanvas.transform.Find("Hair").gameObject.GetComponent<Image>();
+        Image glasses = characterCanvas.transform.Find("Glasses").gameObject.GetComponent<Image>();
+        Image clothes = characterCanvas.transform.Find("Clothes").gameObject.GetComponent<Image>();
 
         body.sprite = config.BodySprite;
         hat.sprite = config.HatSprite;
@@ -138,6 +147,8 @@ public class AiPerson : MonoBehaviour
 
     private void Update()
     {
+        hintCanvas.transform.rotation = characterCanvas.transform.rotation;
+
         transform.position = navAgent.nextPosition;
         TickInfected();
 
@@ -276,10 +287,12 @@ public class AiPerson : MonoBehaviour
         activityTime = UnityEngine.Random.Range(
             ConversationMinTime,
             ConversationMaxTime);
+        
         startingActivityTime = activityTime;
 
-        //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
         activity.Join(this);
+
+        //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
     }
 
     private void Conversation_Update()

@@ -38,7 +38,9 @@ public abstract class Activity : MonoBehaviour
     {
         if (!Reserved.Remove(participant))
             throw new System.IndexOutOfRangeException("Participant's spot was not reserved");
+        
         Participants.Add(participant);
+        notifyJoined(participant);
     }
 
     public virtual bool Leave(AiPerson participant)
@@ -48,4 +50,15 @@ public abstract class Activity : MonoBehaviour
 
     public virtual float GetApproachDistance() { return 0; }
     public abstract string GetName();
+
+    protected void notifyJoined(AiPerson joiner)
+    {
+        foreach (var existing in Participants)
+        {
+            if (existing != joiner) {
+                joiner.onOtherJoinConversation(existing);
+                existing.onOtherJoinConversation(joiner);
+            }
+        }
+    }
 }
