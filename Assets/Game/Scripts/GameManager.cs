@@ -13,6 +13,12 @@ public class GameManager : MonoBehaviour
     public Slider Slider;
     public PlayerController Player;
 
+    public AiPerson SpawnTemplate;
+    public int SpawnCount = 40;
+    public int AgentSpawnCount = 1;
+
+    public Transform SpawnPoint;
+
     private float targetSlider;
     private bool hasLost = false;
 
@@ -30,6 +36,8 @@ public class GameManager : MonoBehaviour
 
     private void Start ()
     {
+        GeneratePartygoers(SpawnCount, AgentSpawnCount);
+
         people = (GameObject
             .FindGameObjectsWithTag("Person")
             .Select((o) => o.GetComponent<AiPerson>())
@@ -38,7 +46,7 @@ public class GameManager : MonoBehaviour
         Slider = GameObject.FindObjectOfType<Slider>();
         Slider.maxValue = 0.5f;
 	}
-	
+
 	private void Update ()
     {
         CalculateScore();
@@ -77,6 +85,19 @@ public class GameManager : MonoBehaviour
             float percent = (float)ConvertedCount / TotalCount;
             ConvertedPercent = (int)(percent * 100f);
             targetSlider = percent;
+        }
+    }
+
+    public void GeneratePartygoers(int count, int agentCount)
+    {
+        for (int i = 0; i < count; ++i)
+            Instantiate(SpawnTemplate, (SpawnPoint ? SpawnPoint : transform).position, Quaternion.identity);
+
+        for (int i = 0; i < agentCount; ++i)
+        {
+            var agent = Instantiate(SpawnTemplate, (SpawnPoint ? SpawnPoint : transform).position, Quaternion.identity);
+            agent.IsAgent = true;
+            agent.name += " (Agent)";
         }
     }
 }
