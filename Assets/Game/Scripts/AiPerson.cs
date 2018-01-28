@@ -148,6 +148,14 @@ public class AiPerson : MonoBehaviour
         InfectMaxTime = 9f;
         InfectMinTime = 6f;
 
+        if(IsAgent)
+        {
+            ConversationMaxTime = 9f;
+            ConversationMinTime = 7f;
+            StandMaxTime = 5f;
+            StandMinTime = 10f;
+        }
+
         talkedTo = new List<AiPerson>();
 
         navAgent = GetComponent<NavMeshAgent>();

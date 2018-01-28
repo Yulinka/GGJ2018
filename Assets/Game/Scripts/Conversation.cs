@@ -7,11 +7,15 @@ public class Conversation : Activity
 {
     public float ActorSize;
     public float RingPadding;
+    private AudioSource audio;
 
     private void Start()
     {
         ActorSize = 1f;
         RingPadding = 0.1f;
+
+        audio = GetComponentInChildren<AudioSource>();
+        PlayOrStopAudio();
     }
 
     public override string GetName()
@@ -70,16 +74,28 @@ public class Conversation : Activity
         notifyJoined(participant);
 
         DistributeParticipants();
+        PlayOrStopAudio();
     }
 
     public override bool Leave(AiPerson participant)
     {
-        if (base.Leave(participant))
-        {
-            DistributeParticipants();
-            return true;
-        }
-        return false;
+        if (!base.Leave(participant))
+            return false;
+        
+        DistributeParticipants();
+        PlayOrStopAudio();
+        return true;
+    }
+
+    private void PlayOrStopAudio()
+    {
+        if (audio == null)
+            return;
+        
+        if (Participants.Count >= 2)
+            audio.Play();
+        else
+            audio.Stop();
     }
 }
 

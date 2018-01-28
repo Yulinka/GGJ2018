@@ -37,7 +37,6 @@ GameObject:
   - component: {fileID: 4176518192527900}
   - component: {fileID: 20871631693814182}
   - component: {fileID: 124035157780005202}
-  - component: {fileID: 81179885991295408}
   - component: {fileID: 114353378617832804}
   - component: {fileID: 114436764713410178}
   m_Layer: 0
@@ -53,7 +52,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1977167451178014}
-  m_LocalRotation: {x: 0.31533086, y: -0.39070788, z: 0.14449091, w: 0.85266423}
+  m_LocalRotation: {x: 0.4536448, y: -0.08355027, z: 0.04276803, w: 0.88622606}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -67,7 +66,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1162283197074134}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.26, y: 7.08, z: -10.71}
+  m_LocalPosition: {x: 4.18, y: 5.79, z: 3.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4176518192527900}
@@ -82,8 +81,8 @@ Camera:
   m_GameObject: {fileID: 1977167451178014}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -92,7 +91,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 90
+  field of view: 80
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -110,13 +109,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &81179885991295408
-AudioListener:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1977167451178014}
-  m_Enabled: 1
 --- !u!114 &114353378617832804
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -128,8 +120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 582c89c013b4346d8b4abdeb88d2ee78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ResetPosition: 0
-  ResetScale: 0
+  ResetPosition: 1
+  ResetScale: 1
   ResetRotation: 0
 --- !u!114 &114436764713410178
 MonoBehaviour:
@@ -143,6 +135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 0}
+  Animate: 1
+  RenderMaterial: {fileID: 0}
 --- !u!114 &114864551102345084
 MonoBehaviour:
   m_ObjectHideFlags: 1
