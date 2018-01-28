@@ -9,14 +9,14 @@ using UnityEngine.UI;
 
 public enum AiPersonState
 {
-    None,
-    Idle,
-    Standing,
-    Smoking,
-    StandAt,
-    Conversation,
-    ConversationMoving,
-    Walking,
+	None,
+	Idle,
+	Standing,
+	Smoking,
+	StandAt,
+	Conversation,
+	ConversationMoving,
+	Walking,
 }
 
 public class AiPerson : MonoBehaviour

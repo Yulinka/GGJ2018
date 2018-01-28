@@ -102,18 +102,13 @@ public class BodyGenerator : MonoBehaviour
 
 	private string buildBodySpritePath(BodyConfig config)
 	{
-		return "Characters/" + this.bodyTypeToPath (config.Body) + "/body/" + this.skinTypeToPath (config.Skin);
-	}
-
-	private string buildBodySpritePath(BodyConfig config)
-	{
 		return "Characters/" + this.bodyTypeToPath (config.Body)
 			+ "/body/" + this.skinTypeToPath (config.Skin);
 	}
 
 	private string buildHairSpritePath(BodyConfig config)
 	{
-		int hairIndex = UnityEngine.Random.value * (4 - 1);
+		int hairIndex = (int)(UnityEngine.Random.value * (4 - 1));
 		return "Characters/" + this.bodyTypeToPath(config.Body)
 			+ "/hairs/hair" + hairIndex + this.hairColorTypeToPath(config.Hair);
 	}
@@ -126,7 +121,6 @@ public class BodyGenerator : MonoBehaviour
 
 	private string buildHatSpritePath(BodyConfig config)
 	{
-		int hatIndex = this.generateHatIndex(config);
 		return "Characters/" + this.bodyTypeToPath(config.Body)
 				+ "/hat/hat" + this.generateHatIndex(config) + this.hatColorToPath(config.HatColor);
 	}
@@ -143,7 +137,11 @@ public class BodyGenerator : MonoBehaviour
 		if (config.HatColor == BodyHatColorState.Black)
 			numHats++;
 
-		return UnityEditor.Random.value * (numHats - 1);
+		return (int)(UnityEngine.Random.value * (numHats - 1));
+	}
+
+	private string clothesDir(BodyState state) {
+		return "dresses";
 	}
 
 	private string bodyTypeToPath(BodyState state)
@@ -162,7 +160,7 @@ public class BodyGenerator : MonoBehaviour
 		case BodyState.HotMale:
 			return "hotgent";
 		default:
-			break;
+			return "";
 		}
 	}
 
@@ -178,7 +176,7 @@ public class BodyGenerator : MonoBehaviour
 		case BodySkinState.Dark:
 			return "dark";
 		default:
-			break;
+			return "";
 		}
 	}
 
@@ -190,7 +188,7 @@ public class BodyGenerator : MonoBehaviour
 		case BodyClothesState.Red:
 			return "red";
 		default:
-			break;
+			return "";
 		}
 	}
 
@@ -204,7 +202,7 @@ public class BodyGenerator : MonoBehaviour
 		case BodyHatColorState.Green:
 			return "green";
 		default:
-			break;
+			return "";
 		}
 	}
 
@@ -214,7 +212,7 @@ public class BodyGenerator : MonoBehaviour
 		case BodyGlassesState.Glasses:
 			return "glasses1";
 		default:
-			break;
+			return "";
 		}
 	}
 
@@ -230,7 +228,7 @@ public class BodyGenerator : MonoBehaviour
 		case BodyHairState.Silver:
 			return "silver";
 		default:
-			break;
+			return "";
 		}
 	}
 }

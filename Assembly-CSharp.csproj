@@ -51,14 +51,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Game\Crap\Test.cs" />
      <Compile Include="Assets\Game\Scripts\Activity.cs" />
+     <Compile Include="Assets\Game\Scripts\AIGenerator.cs" />
      <Compile Include="Assets\Game\Scripts\AiPerson.cs" />
      <Compile Include="Assets\Game\Scripts\BodyGenerator.cs" />
      <Compile Include="Assets\Game\Scripts\Conversation.cs" />
      <Compile Include="Assets\Game\Scripts\Director.cs" />
      <Compile Include="Assets\Game\Scripts\GameManager.cs" />
      <Compile Include="Assets\Game\Scripts\Helpers.cs" />
+     <Compile Include="Assets\Game\Scripts\HintBubble.cs" />
+     <Compile Include="Assets\Game\Scripts\Interrogate.cs" />
      <Compile Include="Assets\Game\Scripts\LookAtCamera.cs" />
      <Compile Include="Assets\Game\Scripts\LookAtTarget.cs" />
      <Compile Include="Assets\Game\Scripts\PlayerController.cs" />
@@ -66,6 +68,7 @@
      <Compile Include="Assets\Game\Scripts\StandAt.cs" />
      <Compile Include="Assets\MonsterLove\StateMachine\StateMachine.cs" />
      <Compile Include="Assets\MonsterLove\StateMachine\StateMachineRunner.cs" />
+     <None Include="Assets\Game\fx\cctv.shader" />
  <Reference Include="UnityEngine.UIAutomation">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
  </Reference>
