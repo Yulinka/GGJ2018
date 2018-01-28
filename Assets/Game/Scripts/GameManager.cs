@@ -11,11 +11,24 @@ public class GameManager : MonoBehaviour
     public int ConvertedCount = 0;
     public int ConvertedPercent = 0;
     public Slider Slider;
+    public PlayerController Player;
 
     private float targetSlider;
     private bool hasLost = false;
 
-    void Start ()
+    public void EndGame(AiPerson target)
+    {
+        if (target.IsAgent)
+        {
+            Debug.Log("YOU WIN");
+
+            foreach (var p in people)
+                p.Hint.ShowDotDotDot();
+        } else
+            OnLose();
+    }
+
+    private void Start ()
     {
         people = (GameObject
             .FindGameObjectsWithTag("Person")
@@ -26,7 +39,7 @@ public class GameManager : MonoBehaviour
         Slider.maxValue = 0.5f;
 	}
 	
-	void Update ()
+	private void Update ()
     {
         CalculateScore();
 
@@ -40,8 +53,13 @@ public class GameManager : MonoBehaviour
     private void OnLose()
     {
         hasLost = true;
-        Debug.LogError("YOU LOST");
-        Application.Quit();
+
+        Player.enabled = false;
+
+        foreach (var p in people) {
+            p.Hint.ShowLose();
+            p.OnLose();
+        }
     }
 
     private void CalculateScore()
@@ -55,7 +73,8 @@ public class GameManager : MonoBehaviour
             ConvertedCount = people.Count((p) => p.IsConverted);
             InfectedCount = people.Count((p) => p.IsInfected);
 
-            float percent = (float)ConvertedCount / (float)people.Count;
+            int TotalCount = people.Count -1;
+            float percent = (float)ConvertedCount / TotalCount;
             ConvertedPercent = (int)(percent * 100f);
             targetSlider = percent;
         }

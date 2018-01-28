@@ -8,7 +8,7 @@ public enum BodyState
     FatLady,
     FatMale,
     HotLady,
-//    HotMale,
+    HotMale,
 //    SkinnyMale
 }
 
@@ -209,8 +209,8 @@ public class BodyGenerator : MonoBehaviour
 			return "fatgent";
 //		case BodyState.SkinnyMale:
 //			return "skinnygent";
-//		case BodyState.HotMale:
-//			return "hotgent";
+		case BodyState.HotMale:
+			return "hotgent";
 		default:
 			return "";
 		}

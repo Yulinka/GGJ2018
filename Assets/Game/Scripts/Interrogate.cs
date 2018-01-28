@@ -46,6 +46,8 @@ public class Interrogate : MonoBehaviour
 
                         if (Input.GetMouseButtonDown(0))
                             ai.Interrogate();
+                        if (Input.GetMouseButtonDown(1))
+                            ai.Kill();
 
                         return;
                     }

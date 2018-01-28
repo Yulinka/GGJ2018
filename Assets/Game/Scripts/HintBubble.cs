@@ -109,6 +109,12 @@ public class HintBubble : MonoBehaviour
         eagle.enabled = true;
     }
 
+    public void ShowLose()
+    {
+        ShowFascistConvert();
+        showTime = float.MaxValue;
+    }
+
     public void ShowFascistHint()
     {
         resetHint();

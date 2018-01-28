@@ -34,6 +34,7 @@ public class AiPerson : MonoBehaviour
     public float ShoutMinTime = 5f;
     public float ShoutMaxTime = 15f;
     public BodyConfig BodyConfig;
+    public HintBubble Hint;
 
     private StateMachine<AiPersonState> states;
     private Vector3 navDest = Vector3.zero;
@@ -48,8 +49,9 @@ public class AiPerson : MonoBehaviour
     private PlayerController player;
     private bool didInfect;
     private Canvas hintCanvas;
-    private HintBubble hint;
     private Canvas characterCanvas;
+    private float infectedTotalTime;
+    private float lastMetTotalTime;
 
     public void MoveTo(Vector3 location)
     {
@@ -72,23 +74,36 @@ public class AiPerson : MonoBehaviour
     {
         IsInfected = true;
         InfectedBy = infectedBy;
+        infectedTotalTime = Time.time;
         infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
+        name += " (Infected)";
+        Debug.Log("Infected", this);
+    }
+
+    public void Kill()
+    {
+        director.GetComponent<GameManager>().EndGame(this);
+    }
+
+    public void OnLose()
+    {
+        states.ChangeState(AiPersonState.None);
     }
 
     public void Interrogate()
     {
         if (talkedTo.Count == 0)
         {
-            hint.ShowNoHint();
+            Hint.ShowNoHint();
             Debug.Log("Havent spoken to anyone");
         }
         else if (IsInfected)
         {
-            ShowHintAbout(InfectedBy);
+            ShowHintAbout(InfectedBy, infectedTotalTime);
         }
         else
         {
-            hint.ShowClothesHint(talkedTo.Last().BodyConfig.Clothes);
+            ShowHintAbout(talkedTo.Last(), lastMetTotalTime);
         }
     }
 
@@ -98,20 +113,21 @@ public class AiPerson : MonoBehaviour
             talkedTo.Remove(joiner);
 
         talkedTo.Add(joiner);
-        //ShowHintAbout(joiner);
+        lastMetTotalTime = Time.time;
     }
 
-    public void ShowHintAbout(AiPerson target)
+    public void ShowHintAbout(AiPerson target, float hintHash)
     {
-        float rand = UnityEngine.Random.value;
+        int index = (int)(hintHash % 3f);
 
-        if(rand <= 0.33)
-            hint.ShowClothesHint(target.BodyConfig.Clothes);
-        else if (rand <= 0.66)
-            hint.ShowHatHint(target.BodyConfig.Hat);
+        if (index == 0)
+            Hint.ShowClothesHint(target.BodyConfig.Clothes);
+        else if (index == 1)
+            Hint.ShowHatHint(target.BodyConfig.Hat);
+        else if (index == 2)
+            Hint.ShowGlassesHint(target.BodyConfig.Glasses);
         else
-            hint.ShowGlassesHint(target.BodyConfig.Glasses);
-        
+            throw new Exception("Shouldnt get here");
     }
 
     private void Start()
@@ -144,7 +160,7 @@ public class AiPerson : MonoBehaviour
         characterCanvas = transform.Find("Canvas").gameObject.GetComponent<Canvas>();
 
         hintCanvas = transform.Find("HintContainer").transform.Find("Hint").gameObject.GetComponent<Canvas>();
-        hint = hintCanvas.GetComponent<HintBubble>();
+        Hint = hintCanvas.GetComponent<HintBubble>();
 
         BodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
         ConstructCanvas(BodyConfig);
@@ -201,7 +217,7 @@ public class AiPerson : MonoBehaviour
             if(shoutTime <= 0)
             {
                 shoutTime = UnityEngine.Random.Range(ShoutMinTime, ShoutMaxTime);
-                hint.ShowFascistHint();
+                Hint.ShowFascistHint();
             }
         }
     }
@@ -222,7 +238,7 @@ public class AiPerson : MonoBehaviour
         {
             IsConverted = true;
             shoutTime = UnityEngine.Random.Range(ShoutMinTime, ShoutMaxTime);
-            hint.ShowFascistConvert();
+            Hint.ShowFascistConvert();
         }
     }
 
@@ -333,11 +349,11 @@ public class AiPerson : MonoBehaviour
         activityTime = UnityEngine.Random.Range(
             ConversationMinTime,
             ConversationMaxTime);
-        
+
         startingActivityTime = activityTime;
 
         activity.Join(this);
-        hint.ShowDotDotDot();
+        Hint.ShowDotDotDot();
 
         //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
     }

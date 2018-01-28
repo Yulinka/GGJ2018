@@ -8,11 +8,9 @@ public class Conversation : Activity
     public float ActorSize;
     public float RingPadding;
 
-    public Sprite[] Sprites;
-
     private void Start()
     {
-        ActorSize = 0.75f;
+        ActorSize = 1f;
         RingPadding = 0.1f;
     }
 
