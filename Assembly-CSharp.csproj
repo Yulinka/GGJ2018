@@ -54,6 +54,7 @@
      <Compile Include="Assets\Game\Crap\Test.cs" />
      <Compile Include="Assets\Game\Scripts\Activity.cs" />
      <Compile Include="Assets\Game\Scripts\AiPerson.cs" />
+     <Compile Include="Assets\Game\Scripts\BodyGenerator.cs" />
      <Compile Include="Assets\Game\Scripts\Conversation.cs" />
      <Compile Include="Assets\Game\Scripts\Director.cs" />
      <Compile Include="Assets\Game\Scripts\GameManager.cs" />
