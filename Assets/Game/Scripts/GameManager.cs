@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public int InfectedCount = 0;
     public int ConvertedCount = 0;
     public int ConvertedPercent = 0;
-    public int WinTarget = 15;
+    public int WinTarget = 11;
     public Slider Slider;
     public PlayerController Player;
     public float IncrementSpeed = 0.05f;
