@@ -9,14 +9,14 @@ using UnityEngine.UI;
 
 public enum AiPersonState
 {
-	None,
-	Idle,
-	Standing,
-	Smoking,
-	StandAt,
-	Conversation,
-	ConversationMoving,
-	Walking,
+    None,
+    Idle,
+    Standing,
+    Smoking,
+    StandAt,
+    Conversation,
+    ConversationMoving,
+    Walking,
 }
 
 public class AiPerson : MonoBehaviour
@@ -24,6 +24,8 @@ public class AiPerson : MonoBehaviour
     public bool IsAgent = false;
     public bool IsInfected = false;
     public bool IsConverted = false;
+    public bool isWaiter = false;
+    public bool isPianist = false;
     public AiPerson InfectedBy = null;
     public float ConversationMaxTime = 2f;
     public float ConversationMinTime = 1f;
@@ -84,6 +86,9 @@ public class AiPerson : MonoBehaviour
 
     public void Kill()
     {
+        if (isWaiter || isPianist)
+            return;
+
         director.GetComponent<GameManager>().EndGame(this);
     }
 
@@ -99,18 +104,30 @@ public class AiPerson : MonoBehaviour
 
     public void Interrogate()
     {
-        if (talkedTo.Count == 0)
+        if (isWaiter)
+            Hint.ShowWineHint();
+        if (isPianist)
         {
-            Hint.ShowNoHint();
-            Debug.Log("Havent spoken to anyone");
-        }
-        else if (IsInfected)
-        {
-            ShowHintAbout(InfectedBy, infectedTotalTime);
+            Hint.ShowMusicHint();
+            var piano = GameObject.Find("piano");
+            if (piano != null)
+                piano.GetComponent<PianoEaster>().SmashEgg();
         }
         else
         {
-            ShowHintAbout(talkedTo.Last(), lastMetTotalTime);
+            if (talkedTo.Count == 0)
+            {
+                Hint.ShowNoHint();
+                Debug.Log("Havent spoken to anyone");
+            }
+            else if (IsInfected)
+            {
+                ShowHintAbout(InfectedBy, infectedTotalTime);
+            }
+            else
+            {
+                ShowHintAbout(talkedTo.Last(), lastMetTotalTime);
+            }
         }
     }
 
@@ -125,16 +142,25 @@ public class AiPerson : MonoBehaviour
 
     public void ShowHintAbout(AiPerson target, float hintHash)
     {
-        int index = (int)(hintHash % 3f);
-
-        if (index == 0)
-            Hint.ShowClothesHint(target.BodyConfig.Clothes);
-        else if (index == 1)
-            Hint.ShowHatHint(target.BodyConfig.Hat);
-        else if (index == 2)
-            Hint.ShowGlassesHint(target.BodyConfig.Glasses);
+        if (isWaiter)
+        {
+            Hint.ShowWineHint();
+        }
+        else if (isPianist)
+            Hint.ShowMusicHint();
         else
-            throw new Exception("Shouldnt get here");
+        {
+            int index = (int)(hintHash % 3f);
+
+            if (index == 0)
+                Hint.ShowClothesHint(target.BodyConfig.Clothes);
+            else if (index == 1)
+                Hint.ShowHatHint(target.BodyConfig.Hat);
+            else if (index == 2)
+                Hint.ShowGlassesHint(target.BodyConfig.Glasses);
+            else
+                throw new Exception("Shouldnt get here");
+        }
     }
 
     private void Start()
@@ -155,7 +181,7 @@ public class AiPerson : MonoBehaviour
         InfectMaxTime = 9f;
         InfectMinTime = 6f;
 
-        if(IsAgent)
+        if (IsAgent)
         {
             ConversationMaxTime = 9f;
             ConversationMinTime = 7f;
@@ -178,8 +204,11 @@ public class AiPerson : MonoBehaviour
         hintCanvas = transform.Find("HintContainer").transform.Find("Hint").gameObject.GetComponent<Canvas>();
         Hint = hintCanvas.GetComponent<HintBubble>();
 
-        BodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
-        ConstructCanvas(BodyConfig);
+        if (!isWaiter && !isPianist)
+        {
+            BodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
+            ConstructCanvas(BodyConfig);
+        }
 
         states = StateMachine<AiPersonState>.Initialize(this);
         states.ChangeState(AiPersonState.Idle);
@@ -193,18 +222,18 @@ public class AiPerson : MonoBehaviour
         Image glasses = characterCanvas.transform.Find("Glasses").gameObject.GetComponent<Image>();
         Image clothes = characterCanvas.transform.Find("Clothes").gameObject.GetComponent<Image>();
 
-		if (config.Hat == BodyHatState.None)
-			hat.enabled = false;
-		else
-        	hat.sprite = config.HatSprite;
+        if (config.Hat == BodyHatState.None)
+            hat.enabled = false;
+        else
+            hat.sprite = config.HatSprite;
 
-		if (config.Glasses == BodyGlassesState.None)
-			glasses.enabled = false;
-		else
-        	glasses.sprite = config.GlassesSprite;
+        if (config.Glasses == BodyGlassesState.None)
+            glasses.enabled = false;
+        else
+            glasses.sprite = config.GlassesSprite;
 
-		body.sprite = config.BodySprite;
-		hair.sprite = config.HairSprite;
+        body.sprite = config.BodySprite;
+        hair.sprite = config.HairSprite;
         clothes.sprite = config.ClothesSprite;
     }
 
@@ -226,11 +255,11 @@ public class AiPerson : MonoBehaviour
             Debug.DrawRay(transform.position + b, c - b, color);
         }
 
-        if(IsConverted && states.State != AiPersonState.None)
+        if (IsConverted && states.State != AiPersonState.None)
         {
             shoutTime -= Time.deltaTime;
 
-            if(shoutTime <= 0)
+            if (shoutTime <= 0)
             {
                 shoutTime = UnityEngine.Random.Range(ShoutMinTime, ShoutMaxTime);
                 Hint.ShowFascistHint();
@@ -260,18 +289,21 @@ public class AiPerson : MonoBehaviour
 
     private void PickNextActivity()
     {
+        if (isPianist)
+            return;
+
         Activity newActivity = null;
 
-        if(UnityEngine.Random.value <= 0.3f)
+        if (UnityEngine.Random.value <= 0.3f)
             newActivity = director.FindActivity(this, typeof(StandAt));
         else if (UnityEngine.Random.value > 0.3f)
             newActivity = director.FindActivity(this, typeof(Conversation));
 
-        if(newActivity == null || !newActivity.CanJoin(this) || newActivity == activity)
+        if (newActivity == null || !newActivity.CanJoin(this) || newActivity == activity)
             return;
 
         //Debug.Log("Picking new activity: " + activity.GetName());
-        if(activity != null)
+        if (activity != null)
             activity.Leave(this);
 
         activity = newActivity;
@@ -280,7 +312,7 @@ public class AiPerson : MonoBehaviour
         states.ChangeState(AiPersonState.Walking);
     }
 
-	private void SetRandomSprite(SpriteRenderer renderer, Sprite[] sprites)
+    private void SetRandomSprite(SpriteRenderer renderer, Sprite[] sprites)
     {
         if (sprites.Length == 0)
             return;
@@ -385,7 +417,8 @@ public class AiPerson : MonoBehaviour
             didInfect = true;
         }
 
-        if (activityTime <= 0) {
+        if (activityTime <= 0)
+        {
             if (IsAgent && !didInfect)
             {
                 InfectParticipant(activity);

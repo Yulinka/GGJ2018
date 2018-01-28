@@ -17,8 +17,11 @@ public class HintBubble : MonoBehaviour
 	private Image eagle;
 	private Image dove;
     private Image dots;
+    private Image gun;
+    private Image wine;
+    private Image music;
 
-	private void Start ()
+    private void Start ()
     {
 		normalBubble = transform.Find("Bubble").gameObject.GetComponent<Image>();
 		shoutBubble = transform.Find("Shout").gameObject.GetComponent<Image>();
@@ -29,6 +32,9 @@ public class HintBubble : MonoBehaviour
 		eagle = transform.Find("Eagle").gameObject.GetComponent<Image>();
 		dove = transform.Find("Dove").gameObject.GetComponent<Image>();
         dots = transform.Find("Dots").gameObject.GetComponent<Image>();
+        gun = transform.Find("Gun").gameObject.GetComponent<Image>();
+        wine = transform.Find("Wine").gameObject.GetComponent<Image>();
+        music = transform.Find("Music").gameObject.GetComponent<Image>();
 
         clothesColors = new Dictionary<BodyClothesState, Color>{
             {BodyClothesState.Red, Color.red},
@@ -64,6 +70,9 @@ public class HintBubble : MonoBehaviour
         dots.enabled = false;
 		eagle.enabled = false;
 		dove.enabled = false;
+		gun.enabled = false;
+		wine.enabled = false;
+		music.enabled = false;
     }
 
     private void startShow()
@@ -155,4 +164,25 @@ public class HintBubble : MonoBehaviour
 		startShow();
 		dove.enabled = true;
 	}
+
+    public void ShowGunHint()
+    {
+        resetHint();
+        startShow();
+        gun.enabled = true;
+    }
+
+    public void ShowWineHint()
+    {
+        resetHint();
+        startShow();
+        wine.enabled = true;
+    }
+
+    public void ShowMusicHint()
+    {
+        resetHint();
+        startShow();
+        music.enabled = true;
+    }
 }

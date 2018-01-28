@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
 	public int AgentSpawnCount = 1;
 	public bool gameStarted = false;
 
+    public AudioClip LoseSound;
 
     public Transform SpawnPoint;
 
@@ -32,7 +33,7 @@ public class GameManager : MonoBehaviour
     {
         if (gameIsOver || hasLost)
             return;
-        
+
         if (target.IsAgent)
             StartCoroutine(OnWin());
         else
@@ -122,6 +123,8 @@ public class GameManager : MonoBehaviour
 
             p.OnLose();
         }
+
+        AudioSource.PlayClipAtPoint(LoseSound, Camera.main.transform.position);
 
         yield return new WaitForSeconds(8.0f);
         Application.LoadLevel(Application.loadedLevel);
