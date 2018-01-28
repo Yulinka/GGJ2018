@@ -211,7 +211,7 @@ public class AiPerson : MonoBehaviour
 
     private void InfectParticipant(Activity searchIn)
     {
-        var activityRadius = Vector3.Distance(transform.position, Activity.transform.position);
+        var activityRadius = Vector3.Distance(transform.position, activity.transform.position);
         var playerDistance = Vector3.Distance(transform.position, player.transform.position);
 
         if (playerDistance < activityRadius + 1)
@@ -241,8 +241,8 @@ public class AiPerson : MonoBehaviour
 
     private void Walking_Update()
     {
-        if (navAgent.remainingDistance <= Activity.GetApproachDistance())
-            StartActivity(Activity);
+        if (navAgent.remainingDistance <= activity.GetApproachDistance())
+            StartActivity(activity);
     }
 
     private void Walking_Exit()
@@ -257,7 +257,7 @@ public class AiPerson : MonoBehaviour
             StandMaxTime);
         startingActivityTime = activityTime;
 
-        Activity.Join(this);
+        activity.Join(this);
     }
 
     private void StandAt_Update()
@@ -279,18 +279,18 @@ public class AiPerson : MonoBehaviour
         startingActivityTime = activityTime;
 
         //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
-        Activity.Join(this);
+        activity.Join(this);
     }
 
     private void Conversation_Update()
     {
         activityTime -= Time.deltaTime;
-        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, Activity.Color);
+        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
 
         if (activityTime <= 0) {
             if (IsAgent && !didInfect)
             {
-                InfectParticipant(Activity);
+                InfectParticipant(activity);
                 didInfect = true;
             }
 
@@ -306,7 +306,7 @@ public class AiPerson : MonoBehaviour
 
     private void ConversationMoving_Update()
     {
-        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, Activity.Color);
+        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
         //transform.position = navDest;
         //navAgent.Warp(navDest);
 
