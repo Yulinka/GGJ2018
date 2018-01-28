@@ -113,12 +113,21 @@ public class AiPerson : MonoBehaviour
 
     private void Start()
     {
-        ConversationMaxTime = 8f;
-        ConversationMinTime = 4f;
-        StandMaxTime = 3f;
-        StandMinTime = 2f;
-        InfectMaxTime = 3f;
-        InfectMinTime = 1f;
+        // FOR TESTING
+        //ConversationMaxTime = 8f;
+        //ConversationMinTime = 4f;
+        //StandMaxTime = 3f;
+        //StandMinTime = 2f;
+        //InfectMaxTime = 3f;
+        //InfectMinTime = 1f;
+
+        // FOR RELEASE
+        ConversationMaxTime = 20f;
+        ConversationMinTime = 8f;
+        StandMaxTime = 5f;
+        StandMinTime = 10f;
+        InfectMaxTime = 15f;
+        InfectMinTime = 8f;
 
         talkedTo = new List<AiPerson>();
 
