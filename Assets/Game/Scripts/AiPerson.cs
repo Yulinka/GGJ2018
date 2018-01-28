@@ -81,13 +81,11 @@ public class AiPerson : MonoBehaviour
         }
         else if (IsInfected)
         {
-            hint.ShowClothesHint(InfectedBy.BodyConfig.Clothes);
+            ShowHintAbout(InfectedBy);
         }
         else
         {
-            AiPerson lastSpokeTo = talkedTo.Last();
-            hint.ShowClothesHint(lastSpokeTo.BodyConfig.Clothes);
-            Debug.Log("LAST SPOKE TO", lastSpokeTo);
+            hint.ShowClothesHint(talkedTo.Last().BodyConfig.Clothes);
         }
     }
 
@@ -97,7 +95,20 @@ public class AiPerson : MonoBehaviour
             talkedTo.Remove(joiner);
 
         talkedTo.Add(joiner);
-        hint.ShowClothesHint(joiner.BodyConfig.Clothes);
+        ShowHintAbout(joiner);
+    }
+
+    public void ShowHintAbout(AiPerson target)
+    {
+        float rand = UnityEngine.Random.value;
+
+        if(rand <= 0.33)
+            hint.ShowClothesHint(target.BodyConfig.Clothes);
+        else if (rand <= 0.66)
+            hint.ShowHatHint(target.BodyConfig.Hat);
+        else
+            hint.ShowGlassesHint(target.BodyConfig.Glasses);
+        
     }
 
     private void Start()
