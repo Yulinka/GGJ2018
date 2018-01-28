@@ -76,6 +76,8 @@ public class AiPerson : MonoBehaviour
         InfectedBy = infectedBy;
         infectedTotalTime = Time.time;
         infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
+        name += " (Infected)";
+        Debug.Log("Infected", this);
     }
 
     public void Kill()
@@ -347,7 +349,7 @@ public class AiPerson : MonoBehaviour
         activityTime = UnityEngine.Random.Range(
             ConversationMinTime,
             ConversationMaxTime);
-        
+
         startingActivityTime = activityTime;
 
         activity.Join(this);

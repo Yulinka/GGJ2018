@@ -18,8 +18,6 @@ public class Spin : MonoBehaviour
         sprite.color = Color.clear;
     }
 
-
-
     // Update is called once per frame
     void Update()
     {

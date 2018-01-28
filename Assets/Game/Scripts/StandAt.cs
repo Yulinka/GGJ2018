@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 public class StandAt : Activity
-{       
+{
     public StandAt()
     {
         MaxParticipants = 1;
@@ -12,7 +12,7 @@ public class StandAt : Activity
 
     public override string GetName()
     {
-        return "Stand At";
+        return "Idle";
     }
 
     public override float GetApproachDistance()
