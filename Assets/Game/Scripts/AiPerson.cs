@@ -86,58 +86,6 @@ public class AiPerson : MonoBehaviour
         }
     }
 
-    private StateMachine<AiPersonState> states;
-    private Vector3 navDest = Vector3.zero;
-    private NavMeshAgent navAgent;
-    private List<AiPerson> talkedTo;
-    private Director director;
-    public Activity Activity { get; private set; }
-    private float infectedTime;
-    private float activityTime;
-    private float startingActivityTime;
-    private PlayerController player;
-    private bool didInfect;
-
-    public void MoveTo(Vector3 location)
-    {
-        if (states.State != AiPersonState.Conversation)
-            throw new Exception("Requires AiState.Conversation");
-
-        navDest = location;
-        states.ChangeState(AiPersonState.Walking);
-    }
-
-    public void ConversationMove(Vector3 location)
-    {
-        navDest = location;
-        states.ChangeState(AiPersonState.ConversationMoving);
-    }
-
-    public void InfectMe(AiPerson infectedBy)
-    {
-        IsInfected = true;
-        InfectedBy = infectedBy;
-        infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
-        name += " (infected)";
-    }
-
-    public void Interrogate()
-    {
-        if (talkedTo.Count == 0)
-        {
-            Debug.Log("Havent spoken to anyone");
-        }
-        else if (IsInfected)
-        {
-            Debug.Log("INFECTED, AGENT", InfectedBy);
-        }
-        else
-        {
-            AiPerson lastSpokeTo = talkedTo.Last();
-            Debug.Log("LAST SPOKE TO", lastSpokeTo);
-        }
-    }
-
     public void onOtherJoinConversation(AiPerson joiner)
     {
         if (talkedTo.Contains(joiner))
@@ -210,7 +158,7 @@ public class AiPerson : MonoBehaviour
         if (!IsInfected || IsConverted)
             return;
 
-        bool inActivityWithAgent = Activity.Participants.Contains(InfectedBy);
+        bool inActivityWithAgent = activity.Participants.Contains(InfectedBy);
 
         if (inActivityWithAgent)
             return;
