@@ -7,14 +7,14 @@ public class Conversation : Activity
 {
     public float ActorSize;
     public float RingPadding;
-    private AudioSource audio;
+    private AudioSource whisper;
 
     private void Start()
     {
         ActorSize = 1f;
         RingPadding = 0.1f;
 
-        audio = GetComponentInChildren<AudioSource>();
+        whisper = GetComponentInChildren<AudioSource>();
         PlayOrStopAudio();
     }
 
@@ -89,13 +89,13 @@ public class Conversation : Activity
 
     private void PlayOrStopAudio()
     {
-        if (audio == null)
+        if (whisper == null)
             return;
         
         if (Participants.Count >= 3)
-            audio.Play();
+            whisper.Play();
         else
-            audio.Stop();
+            whisper.Stop();
     }
 }
 

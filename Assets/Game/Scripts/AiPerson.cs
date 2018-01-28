@@ -379,6 +379,12 @@ public class AiPerson : MonoBehaviour
         activityTime -= Time.deltaTime;
         Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
 
+        if(activity && IsAgent && !didInfect && UnityEngine.Random.value <= 0.10)
+        {
+            InfectParticipant(activity);
+            didInfect = true;
+        }
+
         if (activityTime <= 0) {
             if (IsAgent && !didInfect)
             {
