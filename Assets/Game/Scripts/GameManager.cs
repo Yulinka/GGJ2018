@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public int InfectedCount = 0;
     public int ConvertedCount = 0;
     public int ConvertedPercent = 0;
-    public int WinTarget = 10;
+    public int WinTarget = 15;
     public Slider Slider;
     public PlayerController Player;
 
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
         Player.enabled = false;
 
         foreach (var p in people) {
-            p.Hint.ShowLose();
+            p.Hint.ShowLose(p.IsAgent);
             p.OnLose();
         }
     }

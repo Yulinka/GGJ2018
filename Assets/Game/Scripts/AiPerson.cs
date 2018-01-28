@@ -145,8 +145,8 @@ public class AiPerson : MonoBehaviour
         ConversationMinTime = 8f;
         StandMaxTime = 5f;
         StandMinTime = 10f;
-        InfectMaxTime = 15f;
-        InfectMinTime = 8f;
+        InfectMaxTime = 9f;
+        InfectMinTime = 6f;
 
         talkedTo = new List<AiPerson>();
 
@@ -210,7 +210,7 @@ public class AiPerson : MonoBehaviour
             Debug.DrawRay(transform.position + b, c - b, color);
         }
 
-        if(IsConverted)
+        if(IsConverted && states.State != AiPersonState.None)
         {
             shoutTime -= Time.deltaTime;
 
