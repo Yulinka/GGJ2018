@@ -31,24 +31,60 @@ public class AiPerson : MonoBehaviour
     public float InfectMinTime = 7f;
     public float StandMaxTime = 5f;
     public float StandMinTime = 3f;
+	public BodyConfig bodyConfig;
 
-	// Hot Lady
-	public Sprite[] BodySprites;
-	public Sprite[] GlassesSprites;
-	public Sprite[] HatSprites;
-	public Sprite[] ClothesSprites;
-	public Sprite[] HairSprites;
+    private StateMachine<AiPersonState> states;
+    private Vector3 navDest = Vector3.zero;
+    private NavMeshAgent navAgent;
+    private List<AiPerson> talkedTo;
+    private Director director;
+    private Activity activity;
+    private float infectedTime;
+    private float activityTime;
+    private float startingActivityTime;
+    private PlayerController player;
+    private bool didInfect;
 
-	public int bodyIndex;
-	public int glassesIndex;
-	public int hatIndex;
-	public int clothesIndex;
-	public int hairIndex;
-	private SpriteRenderer bodyRenderer;
-	private SpriteRenderer glassesRenderer;
-	private SpriteRenderer hatRenderer;
-	private SpriteRenderer hairRenderer;
-	private SpriteRenderer clothsRenderer;
+    public void MoveTo(Vector3 location)
+    {
+        if (states.State != AiPersonState.Conversation)
+            throw new Exception("Requires AiState.Conversation");
+
+        talkedTo = new List<AiPerson>();
+
+        navDest = location;
+        states.ChangeState(AiPersonState.Walking);
+    }
+
+    public void ConversationMove(Vector3 location)
+    {
+        navDest = location;
+        states.ChangeState(AiPersonState.ConversationMoving);
+    }
+
+    public void InfectMe(AiPerson infectedBy)
+    {
+        IsInfected = true;
+        InfectedBy = infectedBy;
+        infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
+    }
+
+    public void Interrogate()
+    {
+        if (talkedTo.Count == 0)
+        {
+            Debug.Log("Havent spoken to anyone");
+        }
+        else if (IsInfected)
+        {
+            Debug.Log("INFECTED, AGENT", InfectedBy);
+        }
+        else
+        {
+            AiPerson lastSpokeTo = talkedTo.Last();
+            Debug.Log("LAST SPOKE TO", lastSpokeTo);
+        }
+    }
 
     private StateMachine<AiPersonState> states;
     private Vector3 navDest = Vector3.zero;
@@ -128,7 +164,7 @@ public class AiPerson : MonoBehaviour
         director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
-        var bodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
+        bodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
         ConstructCanvas(bodyConfig);
 
         states = StateMachine<AiPersonState>.Initialize(this);

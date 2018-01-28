@@ -5,7 +5,6 @@ using UnityEngine;
 public enum BodyState
 {
     CuteLady,
-    CuteMale,
     FatLady,
     FatMale,
     HotLady,
@@ -33,6 +32,21 @@ public enum BodyHatState
     Hat
 }
 
+public enum BodyHatColorState
+{
+	Black,
+	Red,
+	Green,
+}
+
+public enum BodyHairState
+{
+	Blonde,
+	Red,
+	Black,
+	Silver,
+}
+
 
 public enum BodyClothesState
 {
@@ -45,7 +59,9 @@ public class BodyConfig
     public BodyState Body;
     public BodySkinState Skin;
     public BodyGlassesState Glasses;
-    public BodyHatState Hat;
+	public BodyHatState Hat;
+	public BodyHatColorState HatColor;
+	public BodyHairState Hair;
     public BodyClothesState Clothes;
 
     public Sprite BodySprite;
@@ -65,11 +81,13 @@ public class BodyGenerator : MonoBehaviour
         config.Glasses = BodyGlassesState.None;
         config.Hat = BodyHatState.Hat;
 
-        config.BodySprite = Resources.Load<Sprite>("Characters/hotlady/body/cream");
-        config.HairSprite = Resources.Load<Sprite>("Characters/hotlady/hairs/hair5");
-        config.ClothesSprite = Resources.Load<Sprite>("Characters/hotlady/clothes/red");
-        config.HatSprite = Resources.Load<Sprite>("Characters/hotlady/hats/hat1");
-        config.GlassesSprite = Resources.Load<Sprite>("Characters/hotlady/glasses/glasses1");
+		//Sprite[] sprites = Resources.LoadAll<Sprite> ("Characters/hotlady/hats");
+
+		config.BodySprite = Resources.Load<Sprite>(this.buildBodySpritePath(config));
+		config.HairSprite = Resources.Load<Sprite>(this.buildHairSpritePath(config));
+		config.ClothesSprite = Resources.Load<Sprite>(this.buildClothesSpritePath(config));
+		config.HatSprite = Resources.Load<Sprite>(this.buildHatSpritePath(config));
+		config.GlassesSprite = Resources.Load<Sprite>(this.buildGlassesSpritePath(config));
 
         return config;
     }
@@ -81,4 +99,138 @@ public class BodyGenerator : MonoBehaviour
         return config;
         
     }
+
+	private string buildBodySpritePath(BodyConfig config)
+	{
+		return "Characters/" + this.bodyTypeToPath (config.Body) + "/body/" + this.skinTypeToPath (config.Skin);
+	}
+
+	private string buildBodySpritePath(BodyConfig config)
+	{
+		return "Characters/" + this.bodyTypeToPath (config.Body)
+			+ "/body/" + this.skinTypeToPath (config.Skin);
+	}
+
+	private string buildHairSpritePath(BodyConfig config)
+	{
+		int hairIndex = UnityEngine.Random.value * (4 - 1);
+		return "Characters/" + this.bodyTypeToPath(config.Body)
+			+ "/hairs/hair" + hairIndex + this.hairColorTypeToPath(config.Hair);
+	}
+
+	private string buildClothesSpritePath(BodyConfig config)
+	{
+		return "Characters/" + this.bodyTypeToPath(config.Body)
+			+ "/" + this.clothesDir(config.Body) + "/" + this.clothesColorToName(config.Clothes);
+	}
+
+	private string buildHatSpritePath(BodyConfig config)
+	{
+		int hatIndex = this.generateHatIndex(config);
+		return "Characters/" + this.bodyTypeToPath(config.Body)
+				+ "/hat/hat" + this.generateHatIndex(config) + this.hatColorToPath(config.HatColor);
+	}
+
+	private string buildGlassesSpritePath(BodyConfig config)
+	{
+		return "Characters/" + this.bodyTypeToPath(config.Body)
+			+ "/glasses/" + this.glassesTypeToName(config.Glasses);
+	}
+
+	private int generateHatIndex(BodyConfig config)
+	{
+		int numHats = 3;
+		if (config.HatColor == BodyHatColorState.Black)
+			numHats++;
+
+		return UnityEditor.Random.value * (numHats - 1);
+	}
+
+	private string bodyTypeToPath(BodyState state)
+	{
+		switch (state) {
+		case BodyState.CuteLady:
+			return "cutelady";
+		case BodyState.FatLady:
+			return "fatlady";
+		case BodyState.HotLady:
+			return "hotlady";
+		case BodyState.FatMale:
+			return "fatgent";
+		case BodyState.SkinnyMale:
+			return "skinnygent";
+		case BodyState.HotMale:
+			return "hotgent";
+		default:
+			break;
+		}
+	}
+
+	private string skinTypeToPath(BodySkinState state)
+	{
+		switch (state) {
+		case BodySkinState.White:
+			return "white";
+		case BodySkinState.Cream:
+			return "cream";
+		case BodySkinState.Brown:
+			return "brown";
+		case BodySkinState.Dark:
+			return "dark";
+		default:
+			break;
+		}
+	}
+
+	private string clothesColorToName(BodyClothesState state)
+	{
+		switch (state) {
+		case BodyClothesState.Blue:
+			return "blue";
+		case BodyClothesState.Red:
+			return "red";
+		default:
+			break;
+		}
+	}
+
+	private string hatColorToPath(BodyHatColorState state)
+	{
+		switch (state) {
+		case BodyHatColorState.Black:
+			return "blue";
+		case BodyHatColorState.Red:
+			return "red";
+		case BodyHatColorState.Green:
+			return "green";
+		default:
+			break;
+		}
+	}
+
+	private string glassesTypeToName(BodyGlassesState state)
+	{
+		switch (state) {
+		case BodyGlassesState.Glasses:
+			return "glasses1";
+		default:
+			break;
+		}
+	}
+
+	private string hairColorTypeToPath(BodyHairState state)
+	{
+		switch (state) {
+		case BodyHairState.Blonde:
+			return "blonde";
+		case BodyHairState.Black:
+			return "black";
+		case BodyHairState.Red:
+			return "red";
+		case BodyHairState.Silver:
+			return "silver";
+		default:
+			break;
+		}
+	}
 }
