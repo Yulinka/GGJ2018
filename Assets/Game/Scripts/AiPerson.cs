@@ -34,6 +34,7 @@ public class AiPerson : MonoBehaviour
     public float ShoutMinTime = 5f;
     public float ShoutMaxTime = 15f;
     public BodyConfig BodyConfig;
+    public HintBubble Hint;
 
     private StateMachine<AiPersonState> states;
     private Vector3 navDest = Vector3.zero;
@@ -48,7 +49,6 @@ public class AiPerson : MonoBehaviour
     private PlayerController player;
     private bool didInfect;
     private Canvas hintCanvas;
-    private HintBubble hint;
     private Canvas characterCanvas;
     private float infectedTotalTime;
     private float lastMetTotalTime;
@@ -78,11 +78,21 @@ public class AiPerson : MonoBehaviour
         infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
     }
 
+    public void Kill()
+    {
+        director.GetComponent<GameManager>().EndGame(this);
+    }
+
+    public void OnLose()
+    {
+        states.ChangeState(AiPersonState.None);
+    }
+
     public void Interrogate()
     {
         if (talkedTo.Count == 0)
         {
-            hint.ShowNoHint();
+            Hint.ShowNoHint();
             Debug.Log("Havent spoken to anyone");
         }
         else if (IsInfected)
@@ -109,11 +119,11 @@ public class AiPerson : MonoBehaviour
         int index = (int)(hintHash % 3f);
 
         if (index == 0)
-            hint.ShowClothesHint(target.BodyConfig.Clothes);
+            Hint.ShowClothesHint(target.BodyConfig.Clothes);
         else if (index == 1)
-            hint.ShowHatHint(target.BodyConfig.Hat);
+            Hint.ShowHatHint(target.BodyConfig.Hat);
         else if (index == 2)
-            hint.ShowGlassesHint(target.BodyConfig.Glasses);
+            Hint.ShowGlassesHint(target.BodyConfig.Glasses);
         else
             throw new Exception("Shouldnt get here");
     }
@@ -148,7 +158,7 @@ public class AiPerson : MonoBehaviour
         characterCanvas = transform.Find("Canvas").gameObject.GetComponent<Canvas>();
 
         hintCanvas = transform.Find("HintContainer").transform.Find("Hint").gameObject.GetComponent<Canvas>();
-        hint = hintCanvas.GetComponent<HintBubble>();
+        Hint = hintCanvas.GetComponent<HintBubble>();
 
         BodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
         ConstructCanvas(BodyConfig);
@@ -205,7 +215,7 @@ public class AiPerson : MonoBehaviour
             if(shoutTime <= 0)
             {
                 shoutTime = UnityEngine.Random.Range(ShoutMinTime, ShoutMaxTime);
-                hint.ShowFascistHint();
+                Hint.ShowFascistHint();
             }
         }
     }
@@ -226,7 +236,7 @@ public class AiPerson : MonoBehaviour
         {
             IsConverted = true;
             shoutTime = UnityEngine.Random.Range(ShoutMinTime, ShoutMaxTime);
-            hint.ShowFascistConvert();
+            Hint.ShowFascistConvert();
         }
     }
 
@@ -341,7 +351,7 @@ public class AiPerson : MonoBehaviour
         startingActivityTime = activityTime;
 
         activity.Join(this);
-        hint.ShowDotDotDot();
+        Hint.ShowDotDotDot();
 
         //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
     }

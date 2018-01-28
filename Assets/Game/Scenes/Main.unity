@@ -218,7 +218,13 @@ Prefab:
       propertyPath: MaxParticipants
       value: 3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 114437449106255172, guid: 133e82f2a81844207aa08e7c26e7b02b,
+        type: 2}
+      propertyPath: Player
+      value: 
+      objectReference: {fileID: 623321600}
+    m_RemovedComponents:
+    - {fileID: 114703833388470348, guid: 133e82f2a81844207aa08e7c26e7b02b, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 133e82f2a81844207aa08e7c26e7b02b, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &41903778 stripped
@@ -1478,6 +1484,12 @@ MonoBehaviour:
   ActorSize: 0
   RingPadding: 0
   Sprites: []
+--- !u!114 &623321600 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114451295948688690, guid: 3a6586c72504541568fa6c5e2de67365,
+    type: 2}
+  m_PrefabInternal: {fileID: 1822843764}
+  m_Script: {fileID: 11500000, guid: 0003c75e9054744bf9b3114c9ee75439, type: 3}
 --- !u!1001 &664028461
 Prefab:
   m_ObjectHideFlags: 0
