@@ -9,14 +9,14 @@ using UnityEngine.UI;
 
 public enum AiPersonState
 {
-    None,
-    Idle,
-    Standing,
-    Smoking,
-    StandAt,
-    Conversation,
-    ConversationMoving,
-    Walking,
+	None,
+	Idle,
+	Standing,
+	Smoking,
+	StandAt,
+	Conversation,
+	ConversationMoving,
+	Walking,
 }
 
 public class AiPerson : MonoBehaviour
@@ -31,7 +31,7 @@ public class AiPerson : MonoBehaviour
     public float InfectMinTime = 7f;
     public float StandMaxTime = 5f;
     public float StandMinTime = 3f;
-	public BodyConfig bodyConfig;
+    public BodyConfig BodyConfig;
 
     private StateMachine<AiPersonState> states;
     private Vector3 navDest = Vector3.zero;
@@ -44,6 +44,9 @@ public class AiPerson : MonoBehaviour
     private float startingActivityTime;
     private PlayerController player;
     private bool didInfect;
+    private Canvas hintCanvas;
+    private HintBubble hint;
+    private Canvas characterCanvas;
 
     public void MoveTo(Vector3 location)
     {
@@ -73,68 +76,16 @@ public class AiPerson : MonoBehaviour
     {
         if (talkedTo.Count == 0)
         {
+            hint.ShowNoHint();
             Debug.Log("Havent spoken to anyone");
         }
         else if (IsInfected)
         {
-            Debug.Log("INFECTED, AGENT", InfectedBy);
+            ShowHintAbout(InfectedBy);
         }
         else
         {
-            AiPerson lastSpokeTo = talkedTo.Last();
-            Debug.Log("LAST SPOKE TO", lastSpokeTo);
-        }
-    }
-
-    private StateMachine<AiPersonState> states;
-    private Vector3 navDest = Vector3.zero;
-    private NavMeshAgent navAgent;
-    private List<AiPerson> talkedTo;
-    private Director director;
-    public Activity Activity { get; private set; }
-    private float infectedTime;
-    private float activityTime;
-    private float startingActivityTime;
-    private PlayerController player;
-    private bool didInfect;
-
-    public void MoveTo(Vector3 location)
-    {
-        if (states.State != AiPersonState.Conversation)
-            throw new Exception("Requires AiState.Conversation");
-
-        navDest = location;
-        states.ChangeState(AiPersonState.Walking);
-    }
-
-    public void ConversationMove(Vector3 location)
-    {
-        navDest = location;
-        states.ChangeState(AiPersonState.ConversationMoving);
-    }
-
-    public void InfectMe(AiPerson infectedBy)
-    {
-        IsInfected = true;
-        InfectedBy = infectedBy;
-        infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
-        name += " (infected)";
-    }
-
-    public void Interrogate()
-    {
-        if (talkedTo.Count == 0)
-        {
-            Debug.Log("Havent spoken to anyone");
-        }
-        else if (IsInfected)
-        {
-            Debug.Log("INFECTED, AGENT", InfectedBy);
-        }
-        else
-        {
-            AiPerson lastSpokeTo = talkedTo.Last();
-            Debug.Log("LAST SPOKE TO", lastSpokeTo);
+            hint.ShowClothesHint(talkedTo.Last().BodyConfig.Clothes);
         }
     }
 
@@ -144,6 +95,20 @@ public class AiPerson : MonoBehaviour
             talkedTo.Remove(joiner);
 
         talkedTo.Add(joiner);
+        ShowHintAbout(joiner);
+    }
+
+    public void ShowHintAbout(AiPerson target)
+    {
+        float rand = UnityEngine.Random.value;
+
+        if(rand <= 0.33)
+            hint.ShowClothesHint(target.BodyConfig.Clothes);
+        else if (rand <= 0.66)
+            hint.ShowHatHint(target.BodyConfig.Hat);
+        else
+            hint.ShowGlassesHint(target.BodyConfig.Glasses);
+        
     }
 
     private void Start()
@@ -159,13 +124,18 @@ public class AiPerson : MonoBehaviour
 
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.updatePosition = false;
+        navAgent.updateRotation = false;
         navAgent.autoBraking = true;
 
         director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        characterCanvas = transform.Find("Canvas").gameObject.GetComponent<Canvas>();
 
-        bodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
-        ConstructCanvas(bodyConfig);
+        hintCanvas = transform.Find("HintContainer").transform.Find("Hint").gameObject.GetComponent<Canvas>();
+        hint = hintCanvas.GetComponent<HintBubble>();
+
+        BodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
+        ConstructCanvas(BodyConfig);
 
         states = StateMachine<AiPersonState>.Initialize(this);
         states.ChangeState(AiPersonState.Idle);
@@ -173,23 +143,31 @@ public class AiPerson : MonoBehaviour
 
     private void ConstructCanvas(BodyConfig config)
     {
-        Canvas canvas = transform.Find("Canvas").gameObject.GetComponent<Canvas>();
+        Image body = characterCanvas.transform.Find("Body").gameObject.GetComponent<Image>();
+        Image hat = characterCanvas.transform.Find("Hat").gameObject.GetComponent<Image>();
+        Image hair = characterCanvas.transform.Find("Hair").gameObject.GetComponent<Image>();
+        Image glasses = characterCanvas.transform.Find("Glasses").gameObject.GetComponent<Image>();
+        Image clothes = characterCanvas.transform.Find("Clothes").gameObject.GetComponent<Image>();
 
-        Image body = canvas.transform.Find("Body").gameObject.GetComponent<Image>();
-        Image hat = canvas.transform.Find("Hat").gameObject.GetComponent<Image>();
-        Image hair = canvas.transform.Find("Hair").gameObject.GetComponent<Image>();
-        Image glasses = canvas.transform.Find("Glasses").gameObject.GetComponent<Image>();
-        Image clothes = canvas.transform.Find("Clothes").gameObject.GetComponent<Image>();
+		if (config.Hat == BodyHatState.None)
+			hat.enabled = false;
+		else
+        	hat.sprite = config.HatSprite;
 
-        body.sprite = config.BodySprite;
-        hat.sprite = config.HatSprite;
-        hair.sprite = config.HairSprite;
-        glasses.sprite = config.GlassesSprite;
+		if (config.Glasses == BodyGlassesState.None)
+			glasses.enabled = false;
+		else
+        	glasses.sprite = config.GlassesSprite;
+
+		body.sprite = config.BodySprite;
+		hair.sprite = config.HairSprite;
         clothes.sprite = config.ClothesSprite;
     }
 
     private void Update()
     {
+        hintCanvas.transform.rotation = characterCanvas.transform.rotation;
+
         transform.position = navAgent.nextPosition;
         TickInfected();
 
@@ -210,7 +188,7 @@ public class AiPerson : MonoBehaviour
         if (!IsInfected || IsConverted)
             return;
 
-        bool inActivityWithAgent = Activity.Participants.Contains(InfectedBy);
+        bool inActivityWithAgent = activity.Participants.Contains(InfectedBy);
 
         if (inActivityWithAgent)
             return;
@@ -230,16 +208,16 @@ public class AiPerson : MonoBehaviour
         else if (UnityEngine.Random.value > 0.1f)
             newActivity = director.FindActivity(this, typeof(Conversation));
 
-        if(newActivity == null || !newActivity.CanJoin(this) || newActivity == Activity)
+        if(newActivity == null || !newActivity.CanJoin(this) || newActivity == activity)
             return;
 
         //Debug.Log("Picking new activity: " + activity.GetName());
-        if(Activity != null)
-            Activity.Leave(this);
+        if(activity != null)
+            activity.Leave(this);
 
-        Activity = newActivity;
-        Activity.Reserve(this);
-        navDest = Activity.transform.position;
+        activity = newActivity;
+        activity.Reserve(this);
+        navDest = activity.transform.position;
         states.ChangeState(AiPersonState.Walking);
     }
 
@@ -263,7 +241,7 @@ public class AiPerson : MonoBehaviour
 
     private void InfectParticipant(Activity searchIn)
     {
-        var activityRadius = Vector3.Distance(transform.position, Activity.transform.position);
+        var activityRadius = Vector3.Distance(transform.position, activity.transform.position);
         var playerDistance = Vector3.Distance(transform.position, player.transform.position);
 
         if (playerDistance < activityRadius + 1)
@@ -293,8 +271,8 @@ public class AiPerson : MonoBehaviour
 
     private void Walking_Update()
     {
-        if (navAgent.remainingDistance <= Activity.GetApproachDistance())
-            StartActivity(Activity);
+        if (navAgent.remainingDistance <= activity.GetApproachDistance())
+            StartActivity(activity);
     }
 
     private void Walking_Exit()
@@ -309,7 +287,7 @@ public class AiPerson : MonoBehaviour
             StandMaxTime);
         startingActivityTime = activityTime;
 
-        Activity.Join(this);
+        activity.Join(this);
     }
 
     private void StandAt_Update()
@@ -328,21 +306,23 @@ public class AiPerson : MonoBehaviour
         activityTime = UnityEngine.Random.Range(
             ConversationMinTime,
             ConversationMaxTime);
+        
         startingActivityTime = activityTime;
 
+        activity.Join(this);
+
         //Debug.Log(ConversationMinTime + ", " + ConversationMaxTime + ", " + conversationTime);
-        Activity.Join(this);
     }
 
     private void Conversation_Update()
     {
         activityTime -= Time.deltaTime;
-        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, Activity.Color);
+        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
 
         if (activityTime <= 0) {
             if (IsAgent && !didInfect)
             {
-                InfectParticipant(Activity);
+                InfectParticipant(activity);
                 didInfect = true;
             }
 
@@ -358,7 +338,7 @@ public class AiPerson : MonoBehaviour
 
     private void ConversationMoving_Update()
     {
-        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, Activity.Color);
+        Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
         //transform.position = navDest;
         //navAgent.Warp(navDest);
 
