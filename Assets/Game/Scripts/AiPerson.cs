@@ -5,6 +5,7 @@ using UnityEngine.AI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public enum AiPersonState
 {
@@ -126,20 +127,28 @@ public class AiPerson : MonoBehaviour
         director = GameObject.FindGameObjectWithTag("Director").GetComponent<Director>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
-		bodyRenderer = transform.Find("Body").GetComponent<SpriteRenderer>();
-		hatRenderer = transform.Find("Hat").GetComponent<SpriteRenderer>();
-		hairRenderer = transform.Find("Hair").GetComponent<SpriteRenderer>();
-		glassesRenderer = transform.Find("Glasses").GetComponent<SpriteRenderer>();
-		clothsRenderer = transform.Find("Cloths").GetComponent<SpriteRenderer>();
-        
-		SetRandomSprite(bodyRenderer, BodySprites);
-		SetRandomSprite(hatRenderer, HatSprites);
-		SetRandomSprite(hairRenderer, HairSprites);
-		SetRandomSprite(glassesRenderer, GlassesSprites);
-		SetRandomSprite(clothsRenderer, ClothsSprites);
+        var bodyConfig = director.GetComponent<BodyGenerator>().GetNextConfig();
+        ConstructCanvas(bodyConfig);
 
         states = StateMachine<AiPersonState>.Initialize(this);
         states.ChangeState(AiPersonState.Idle);
+    }
+
+    private void ConstructCanvas(BodyConfig config)
+    {
+        Canvas canvas = transform.Find("Canvas").gameObject.GetComponent<Canvas>();
+
+        Image body = canvas.transform.Find("Body").gameObject.GetComponent<Image>();
+        Image hat = canvas.transform.Find("Hat").gameObject.GetComponent<Image>();
+        Image hair = canvas.transform.Find("Hair").gameObject.GetComponent<Image>();
+        Image glasses = canvas.transform.Find("Glasses").gameObject.GetComponent<Image>();
+        Image clothes = canvas.transform.Find("Clothes").gameObject.GetComponent<Image>();
+
+        body.sprite = config.BodySprite;
+        hat.sprite = config.HatSprite;
+        hair.sprite = config.HairSprite;
+        glasses.sprite = config.GlassesSprite;
+        clothes.sprite = config.ClothesSprite;
     }
 
     private void Update()
