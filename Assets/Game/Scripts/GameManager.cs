@@ -10,8 +10,15 @@ public class GameManager : MonoBehaviour
     public int InfectedCount = 0;
     public int ConvertedCount = 0;
     public int ConvertedPercent = 0;
+    public int WinTarget = 10;
     public Slider Slider;
     public PlayerController Player;
+
+    public AiPerson SpawnTemplate;
+    public int SpawnCount = 40;
+    public int AgentSpawnCount = 1;
+
+    public Transform SpawnPoint;
 
     private float targetSlider;
     private bool hasLost = false;
@@ -30,6 +37,8 @@ public class GameManager : MonoBehaviour
 
     private void Start ()
     {
+        GeneratePartygoers(SpawnCount, AgentSpawnCount);
+
         people = (GameObject
             .FindGameObjectsWithTag("Person")
             .Select((o) => o.GetComponent<AiPerson>())
@@ -38,7 +47,7 @@ public class GameManager : MonoBehaviour
         Slider = GameObject.FindObjectOfType<Slider>();
         Slider.maxValue = 0.5f;
 	}
-	
+
 	private void Update ()
     {
         CalculateScore();
@@ -46,7 +55,7 @@ public class GameManager : MonoBehaviour
         float increment = 0.05f * Time.deltaTime;
         Slider.value = Mathf.Clamp(Slider.value + increment, 0, targetSlider);
 
-        if (Slider.value >= 0.5f && !hasLost)
+        if (ConvertedCount >= WinTarget && !hasLost)
             OnLose();
 	}
 
@@ -74,9 +83,23 @@ public class GameManager : MonoBehaviour
             InfectedCount = people.Count((p) => p.IsInfected);
 
             int TotalCount = people.Count -1;
-            float percent = (float)ConvertedCount / TotalCount;
+            float percent = (float)ConvertedCount / WinTarget;
+
             ConvertedPercent = (int)(percent * 100f);
             targetSlider = percent;
+        }
+    }
+
+    public void GeneratePartygoers(int count, int agentCount)
+    {
+        for (int i = 0; i < count; ++i)
+            Instantiate(SpawnTemplate, (SpawnPoint ? SpawnPoint : transform).position, Quaternion.identity);
+
+        for (int i = 0; i < agentCount; ++i)
+        {
+            var agent = Instantiate(SpawnTemplate, (SpawnPoint ? SpawnPoint : transform).position, Quaternion.identity);
+            agent.IsAgent = true;
+            agent.name += " (Agent)";
         }
     }
 }

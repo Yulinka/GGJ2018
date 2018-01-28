@@ -52,7 +52,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Game\Scripts\Activity.cs" />
-     <Compile Include="Assets\Game\Scripts\AIGenerator.cs" />
      <Compile Include="Assets\Game\Scripts\AiPerson.cs" />
      <Compile Include="Assets\Game\Scripts\BodyGenerator.cs" />
      <Compile Include="Assets\Game\Scripts\Conversation.cs" />
@@ -65,10 +64,10 @@
      <Compile Include="Assets\Game\Scripts\LookAtTarget.cs" />
      <Compile Include="Assets\Game\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Game\Scripts\ResetTransforms.cs" />
+     <Compile Include="Assets\Game\Scripts\Spin.cs" />
      <Compile Include="Assets\Game\Scripts\StandAt.cs" />
      <Compile Include="Assets\MonsterLove\StateMachine\StateMachine.cs" />
      <Compile Include="Assets\MonsterLove\StateMachine\StateMachineRunner.cs" />
-     <Compile Include="Assets\Spin.cs" />
      <None Include="Assets\Game\fx\cctv.shader" />
  <Reference Include="UnityEngine.UIAutomation">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
