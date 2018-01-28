@@ -5,7 +5,7 @@ using UnityEngine;
 public enum BodyState
 {
 //    CuteLady,
-//    FatLady,
+    FatLady,
     FatMale,
     HotLady,
 //    HotMale,
@@ -108,11 +108,11 @@ public class BodyGenerator : MonoBehaviour
 			{
 				knownConfigs.Add(config.hashKey (), config);
 
-	//			string bodyPath = this.buildBodySpritePath(config);
-	//			string hairPath = this.buildHairSpritePath(config);
-	//			string clothesPath = this.buildClothesSpritePath(config);
-	//			string hatPath = this.buildHatSpritePath(config);
-	//			string glassesPath = this.buildGlassesSpritePath(config);
+				string bodyPath = this.buildBodySpritePath(config);
+				string hairPath = this.buildHairSpritePath(config);
+				string clothesPath = this.buildClothesSpritePath(config);
+				string hatPath = this.buildHatSpritePath(config);
+				string glassesPath = this.buildGlassesSpritePath(config);
 
 				config.BodySprite = Resources.Load<Sprite> (this.buildBodySpritePath (config));
 				config.HairSprite = Resources.Load<Sprite> (this.buildHairSpritePath (config));
@@ -181,7 +181,8 @@ public class BodyGenerator : MonoBehaviour
 	}
 
 	private string clothesDir(BodyConfig config) {
-		if(config.Body == BodyState.HotLady)
+		if(config.Body == BodyState.HotLady ||
+			config.Body == BodyState.FatLady)
 			return "dresses";
 		else
 			return "suits";
@@ -192,8 +193,8 @@ public class BodyGenerator : MonoBehaviour
 		switch (state) {
 //		case BodyState.CuteLady:
 //			return "cutelady";
-//		case BodyState.FatLady:
-//			return "fatlady";
+		case BodyState.FatLady:
+			return "fatlady";
 		case BodyState.HotLady:
 			return "hotlady";
 		case BodyState.FatMale:
