@@ -18,13 +18,13 @@ public class GameManager : MonoBehaviour
 
     public AiPerson SpawnTemplate;
     public int SpawnCount = 40;
-    public int AgentSpawnCount = 1;
+	public int AgentSpawnCount = 1;
+	public bool gameStarted = false;
 
 
     public Transform SpawnPoint;
 
     private float targetSlider;
-	private bool gameStarted = false;
     private bool hasLost = false;
 
     public void EndGame(AiPerson target)
