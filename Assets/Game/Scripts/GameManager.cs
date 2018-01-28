@@ -26,13 +26,17 @@ public class GameManager : MonoBehaviour
 
     private float targetSlider;
     private bool hasLost = false;
+    private bool gameIsOver = false;
 
     public void EndGame(AiPerson target)
     {
+        if (gameIsOver || hasLost)
+            return;
+        
         if (target.IsAgent)
-            OnWin();
+            StartCoroutine(OnWin());
         else
-            OnLose();
+            StartCoroutine(OnLose());
     }
 
     private void Start ()
@@ -58,7 +62,7 @@ public class GameManager : MonoBehaviour
         Slider.value = Mathf.Clamp(Slider.value + increment, 0, targetSlider);
 
         if (ConvertedCount >= WinTarget && !hasLost)
-            OnLose();
+            StartCoroutine(OnLose());
 	}
 
     IEnumerator StartGame()
@@ -83,13 +87,25 @@ public class GameManager : MonoBehaviour
 	}
 
 
-    private void OnWin()
+    private IEnumerator OnWin()
     {
+        Player.enabled = false;
+
         foreach (var p in people)
-            p.Hint.ShowDotDotDot();
+        {
+            if (p.IsAgent)
+                p.Hint.ShowLose(true);
+            else
+                p.Hint.ShowDotDotDot();
+
+            p.OnWin();
+        }
+
+        yield return new WaitForSeconds(8.0f);
+        Application.LoadLevel(Application.loadedLevel);
     }
 
-    private void OnLose()
+    private IEnumerator OnLose()
     {
         hasLost = true;
 
@@ -102,10 +118,13 @@ public class GameManager : MonoBehaviour
             p.Hint.ShowLose(p.IsAgent);
 
             if (p.IsAgent)
-                Camera.main.GetComponent<LookAtTarget>().Target = p.transform;
+                Camera.main.GetComponentInParent<NewCameraSystem>().LookAtAnimate(p.gameObject);
 
             p.OnLose();
         }
+
+        yield return new WaitForSeconds(8.0f);
+        Application.LoadLevel(Application.loadedLevel);
     }
 
     private void CalculateScore()

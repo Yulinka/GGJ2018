@@ -92,6 +92,11 @@ public class AiPerson : MonoBehaviour
         states.ChangeState(AiPersonState.None);
     }
 
+    public void OnWin()
+    {
+        states.ChangeState(AiPersonState.None);
+    }
+
     public void Interrogate()
     {
         if (talkedTo.Count == 0)
