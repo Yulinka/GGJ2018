@@ -65,7 +65,6 @@ public enum BodyClothesState
 	Gold,
 	Green,
 	Black,
-	Gold,
 	Blue,
 	Silver,
 }
