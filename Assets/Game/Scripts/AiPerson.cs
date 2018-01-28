@@ -178,16 +178,16 @@ public class AiPerson : MonoBehaviour
         else if (UnityEngine.Random.value > 0.1f)
             newActivity = director.FindActivity(this, typeof(Conversation));
 
-        if(newActivity == null || !newActivity.CanJoin(this) || newActivity == Activity)
+        if(newActivity == null || !newActivity.CanJoin(this) || newActivity == activity)
             return;
 
         //Debug.Log("Picking new activity: " + activity.GetName());
-        if(Activity != null)
-            Activity.Leave(this);
+        if(activity != null)
+            activity.Leave(this);
 
-        Activity = newActivity;
-        Activity.Reserve(this);
-        navDest = Activity.transform.position;
+        activity = newActivity;
+        activity.Reserve(this);
+        navDest = activity.transform.position;
         states.ChangeState(AiPersonState.Walking);
     }
 
