@@ -4,12 +4,12 @@ using UnityEngine;
 
 public enum BodyState
 {
-    CuteLady,
-    FatLady,
+//    CuteLady,
+//    FatLady,
     FatMale,
     HotLady,
-    HotMale,
-    SkinnyMale
+//    HotMale,
+//    SkinnyMale
 }
 
 public enum BodySkinState
@@ -84,14 +84,20 @@ public class BodyGenerator : MonoBehaviour
     public BodyConfig GetNextConfig()
     {
         var config = new BodyConfig();
-//		config.Body = this.selectRandomFromEnum<BodyState>();
-		config.Body = BodyState.HotLady;
+		config.Body = this.selectRandomFromEnum<BodyState>();
+//		config.Body = BodyState.HotLady;
 		config.Skin = this.selectRandomFromEnum<BodySkinState>();
 		config.Glasses = this.selectRandomFromEnum<BodyGlassesState>();
 		config.Hat = this.selectRandomFromEnum<BodyHatState>();
 		config.Hair = this.selectRandomFromEnum<BodyHairState>();
 		config.HatColor = this.selectRandomFromEnum<BodyHatColorState>();
 		config.Clothes = this.selectRandomFromEnum<BodyClothesState>();
+
+//		string bodyPath = this.buildBodySpritePath(config);
+//		string hairPath = this.buildHairSpritePath(config);
+//		string clothesPath = this.buildClothesSpritePath(config);
+//		string hatPath = this.buildHatSpritePath(config);
+//		string glassesPath = this.buildGlassesSpritePath(config);
 
 		config.BodySprite = Resources.Load<Sprite>(this.buildBodySpritePath(config));
 		config.HairSprite = Resources.Load<Sprite>(this.buildHairSpritePath(config));
@@ -113,7 +119,8 @@ public class BodyGenerator : MonoBehaviour
 	private T selectRandomFromEnum<T>()
 	{
 		System.Array values = System.Enum.GetValues(typeof(T));
-		return (T)values.GetValue((int)(UnityEngine.Random.value * (values.Length - 1)));
+		int index = (int)(UnityEngine.Random.value * (float)(values.Length));
+		return (T)values.GetValue(index);
 	}
 
 	private string buildBodySpritePath(BodyConfig config)
@@ -132,7 +139,7 @@ public class BodyGenerator : MonoBehaviour
 	private string buildClothesSpritePath(BodyConfig config)
 	{
 		return "Characters/" + this.bodyTypeToPath(config.Body)
-			+ "/" + this.clothesDir(config.Body) + "/" + this.clothesColorToName(config.Clothes);
+			+ "/" + this.clothesDir(config) + "/" + this.clothesColorToName(config.Clothes);
 	}
 
 	private string buildHatSpritePath(BodyConfig config)
@@ -149,32 +156,35 @@ public class BodyGenerator : MonoBehaviour
 
 	private int generateHatIndex(BodyConfig config)
 	{
-		int numHats = 3;
+		int numHats = 2;
 //		if (config.HatColor == BodyHatColorState.Black)
 //			numHats++;
 
 		return (int)(UnityEngine.Random.value * (numHats - 1)) + 1;
 	}
 
-	private string clothesDir(BodyState state) {
-		return "dresses";
+	private string clothesDir(BodyConfig config) {
+		if(config.Body == BodyState.HotLady)
+			return "dresses";
+		else
+			return "suits";
 	}
 
 	private string bodyTypeToPath(BodyState state)
 	{
 		switch (state) {
-		case BodyState.CuteLady:
-			return "cutelady";
-		case BodyState.FatLady:
-			return "fatlady";
+//		case BodyState.CuteLady:
+//			return "cutelady";
+//		case BodyState.FatLady:
+//			return "fatlady";
 		case BodyState.HotLady:
 			return "hotlady";
 		case BodyState.FatMale:
 			return "fatgent";
-		case BodyState.SkinnyMale:
-			return "skinnygent";
-		case BodyState.HotMale:
-			return "hotgent";
+//		case BodyState.SkinnyMale:
+//			return "skinnygent";
+//		case BodyState.HotMale:
+//			return "hotgent";
 		default:
 			return "";
 		}
@@ -241,10 +251,10 @@ public class BodyGenerator : MonoBehaviour
 	{
 		switch (state) {
 		case BodyGlassesState.Glasses:
-			return "glasses1";
+			return "glasses";
 		default:
 			//return "";
-			return "glasses1";
+			return "glasses";
 		}
 	}
 
