@@ -7,10 +7,17 @@ public class PlayerController : MonoBehaviour
     public float Speed = 2f;
 
     private CharacterController characterController;
+	private SpriteRenderer spriteRenderer;
 
 	private void Start ()
     {
         characterController = GetComponent<CharacterController>();
+		spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+		if (UnityEngine.Random.value < 0.5)
+			spriteRenderer.sprite = Resources.Load<Sprite> ("Characters/players/player1");
+		else
+			spriteRenderer.sprite = Resources.Load<Sprite> ("Characters/players/player2");
 	}
 	
 	private void Update ()
