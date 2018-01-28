@@ -25,7 +25,11 @@ public class HintBubble : MonoBehaviour {
 
         clothesColors = new Dictionary<BodyClothesState, Color>{
             {BodyClothesState.Red, Color.red},
-            {BodyClothesState.Blue, Color.blue}
+            {BodyClothesState.Blue, Color.blue},
+            {BodyClothesState.Black, Color.black},
+            {BodyClothesState.Gold, Color.yellow},
+            {BodyClothesState.Green, Color.green},
+            {BodyClothesState.Silver, Color.gray},
         };
 
         resetHint();
