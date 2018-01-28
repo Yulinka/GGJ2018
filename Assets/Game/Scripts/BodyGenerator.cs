@@ -98,13 +98,13 @@ public class BodyConfig
 public class BodyGenerator : MonoBehaviour
 {
 	private Dictionary<string, BodyConfig> knownConfigs = new Dictionary<string, BodyConfig>();
-	private int maxClothesColors = 3; // between 1 and 6
-	private int minClothesIndex;
+//	private int maxClothesColors = 3; // between 1 and 6
+//	private int minClothesIndex;
 
 	private void Awake()
 	{
-		var numClothes = System.Enum.GetValues (typeof (BodyClothesState));
-		minClothesIndex = (int)(UnityEngine.Random.value * (numClothes.Length - maxClothesColors));
+//		var numClothes = System.Enum.GetValues (typeof (BodyClothesState));
+//		minClothesIndex = (int)(UnityEngine.Random.value * (numClothes.Length - maxClothesColors));
 	}
 
     public BodyConfig GetNextConfig()
@@ -119,7 +119,8 @@ public class BodyGenerator : MonoBehaviour
 			config.Hat = this.selectRandomFromEnum<BodyHatState> ();
 			config.Hair = this.selectRandomFromEnum<BodyHairState> ();
 			config.HatColor = this.selectRandomFromEnum<BodyHatColorState> ();
-			config.Clothes = this.selectRandomFromEnum<BodyClothesState> (minClothesIndex, minClothesIndex + maxClothesColors);
+			config.Clothes = this.selectRandomFromEnum<BodyClothesState> ();
+//			config.Clothes = this.selectRandomFromEnum<BodyClothesState> (minClothesIndex, minClothesIndex + maxClothesColors);
 //			config.Clothes = this.selectRandomFromArray<BodyClothesState> (this.allowedClothing);
 
 			if (!knownConfigs.ContainsKey(config.hashKey()))
@@ -152,12 +153,15 @@ public class BodyGenerator : MonoBehaviour
 
 	private T selectRandomFromEnum<T>(int minIndex = 0, int maxIndex = int.MaxValue)
 	{
+//		System.Array values = System.Enum.GetValues(typeof(T));
+//		var max = values.Length;
+//		if (max > maxIndex)
+//			max = maxIndex;
+//		int index = (int)(UnityEngine.Random.value * (max-minIndex)) + minIndex;
+//		return (T)values.GetValue(index);
+
 		System.Array values = System.Enum.GetValues(typeof(T));
-		var max = values.Length;
-		if (max > maxIndex)
-			max = maxIndex;
-		int index = (int)(UnityEngine.Random.value * (max-minIndex)) + minIndex;
-		return (T)values.GetValue(index);
+		return (T)values.GetValue((int)(UnityEngine.Random.value * (values.Length)));
 	}
 
 	private T selectRandomFromArray<T>(T[] array)
