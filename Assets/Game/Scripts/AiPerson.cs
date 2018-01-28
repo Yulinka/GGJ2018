@@ -50,6 +50,8 @@ public class AiPerson : MonoBehaviour
     private Canvas hintCanvas;
     private HintBubble hint;
     private Canvas characterCanvas;
+    private float infectedTotalTime;
+    private float lastMetTotalTime;
 
     public void MoveTo(Vector3 location)
     {
@@ -72,6 +74,7 @@ public class AiPerson : MonoBehaviour
     {
         IsInfected = true;
         InfectedBy = infectedBy;
+        infectedTotalTime = Time.time;
         infectedTime = UnityEngine.Random.Range(InfectMinTime, InfectMaxTime);
     }
 
@@ -84,11 +87,11 @@ public class AiPerson : MonoBehaviour
         }
         else if (IsInfected)
         {
-            ShowHintAbout(InfectedBy);
+            ShowHintAbout(InfectedBy, infectedTotalTime);
         }
         else
         {
-            hint.ShowClothesHint(talkedTo.Last().BodyConfig.Clothes);
+            ShowHintAbout(talkedTo.Last(), lastMetTotalTime);
         }
     }
 
@@ -98,20 +101,21 @@ public class AiPerson : MonoBehaviour
             talkedTo.Remove(joiner);
 
         talkedTo.Add(joiner);
-        //ShowHintAbout(joiner);
+        lastMetTotalTime = Time.time;
     }
 
-    public void ShowHintAbout(AiPerson target)
+    public void ShowHintAbout(AiPerson target, float hintHash)
     {
-        float rand = UnityEngine.Random.value;
+        int index = (int)(hintHash % 3f);
 
-        if(rand <= 0.33)
+        if (index == 0)
             hint.ShowClothesHint(target.BodyConfig.Clothes);
-        else if (rand <= 0.66)
+        else if (index == 1)
             hint.ShowHatHint(target.BodyConfig.Hat);
-        else
+        else if (index == 2)
             hint.ShowGlassesHint(target.BodyConfig.Glasses);
-        
+        else
+            throw new Exception("Shouldnt get here");
     }
 
     private void Start()

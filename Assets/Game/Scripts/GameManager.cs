@@ -55,7 +55,8 @@ public class GameManager : MonoBehaviour
             ConvertedCount = people.Count((p) => p.IsConverted);
             InfectedCount = people.Count((p) => p.IsInfected);
 
-            float percent = (float)ConvertedCount / (float)people.Count;
+            int TotalCount = people.Count -1;
+            float percent = (float)ConvertedCount / TotalCount;
             ConvertedPercent = (int)(percent * 100f);
             targetSlider = percent;
         }
