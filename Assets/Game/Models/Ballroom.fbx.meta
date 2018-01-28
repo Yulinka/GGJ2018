@@ -9,16 +9,123 @@ ModelImporter:
     100002: Camera
     100004: Cube
     100006: Lamp
+    100008: Camera.001
+    100010: Carpet
+    100012: Hemi
+    100014: Room
+    100016: Stairs
+    100018: stairs
+    100020: stairs.001
+    100022: stairs.002
+    100024: stairs.003
+    100026: stairs.004
+    100028: stairs.005
+    100030: stairs.006
+    100032: stairs.007
+    100034: stairs.008
+    100036: stairs.009
+    100038: stairs.010
+    100040: Window
+    100042: Door
+    100044: Table
+    100046: WindowCut
     400000: //RootNode
     400002: Camera
     400004: Cube
     400006: Lamp
+    400008: Camera.001
+    400010: Carpet
+    400012: Hemi
+    400014: Room
+    400016: Stairs
+    400018: stairs
+    400020: stairs.001
+    400022: stairs.002
+    400024: stairs.003
+    400026: stairs.004
+    400028: stairs.005
+    400030: stairs.006
+    400032: stairs.007
+    400034: stairs.008
+    400036: stairs.009
+    400038: stairs.010
+    400040: Window
+    400042: Door
+    400044: Table
+    400046: WindowCut
     2000000: Camera
+    2000002: Camera.001
     2100000: Material
+    2100002: Material.004
+    2100004: Material.003
+    2100006: Material.001
+    2100008: Material.002
+    2100010: No Name
+    2100012: floor
+    2100014: wall
+    2100016: Material.009
+    2100018: floor.001
+    2100020: Material.007
+    2100022: Material.008
     2300000: Cube
+    2300002: Carpet
+    2300004: Room
+    2300006: stairs
+    2300008: stairs.001
+    2300010: stairs.002
+    2300012: stairs.003
+    2300014: stairs.004
+    2300016: stairs.005
+    2300018: stairs.006
+    2300020: stairs.007
+    2300022: stairs.008
+    2300024: stairs.009
+    2300026: stairs.010
+    2300028: Window
+    2300030: Door
+    2300032: Stairs
+    2300034: Table
+    2300036: WindowCut
     3300000: Cube
+    3300002: Carpet
+    3300004: Room
+    3300006: stairs
+    3300008: stairs.001
+    3300010: stairs.002
+    3300012: stairs.003
+    3300014: stairs.004
+    3300016: stairs.005
+    3300018: stairs.006
+    3300020: stairs.007
+    3300022: stairs.008
+    3300024: stairs.009
+    3300026: stairs.010
+    3300028: Window
+    3300030: Door
+    3300032: Stairs
+    3300034: Table
+    3300036: WindowCut
     4300000: Cube
+    4300002: Carpet
+    4300004: Window
+    4300006: stairs
+    4300008: stairs.001
+    4300010: stairs.002
+    4300012: stairs.003
+    4300014: stairs.004
+    4300016: stairs.005
+    4300018: stairs.006
+    4300020: stairs.007
+    4300022: stairs.008
+    4300024: stairs.009
+    4300026: stairs.010
+    4300028: Room
+    4300030: Table
+    4300032: Stairs
+    4300034: Door
+    4300036: WindowCut
     10800000: Lamp
+    10800002: Hemi
   externalObjects: {}
   materials:
     importMaterials: 1
