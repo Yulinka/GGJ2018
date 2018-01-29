@@ -21,6 +21,6 @@ public class PianoEaster : MonoBehaviour
         audio.clip = Song;
         audio.Play();
         light.color = new Color(1, 0.3f, 0.1f, 1);
-        light.intensity = 80;
+        light.intensity = 60;
     }
 }
