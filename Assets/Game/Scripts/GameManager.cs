@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public int SpawnCount = 40;
 	public int AgentSpawnCount = 1;
 	public bool gameStarted = false;
+    public float gameTotalTime = 0f;
 
     public AudioClip LoseSound;
 
@@ -50,6 +51,10 @@ public class GameManager : MonoBehaviour
 
 	private void Update ()
     {
+
+        if (gameStarted)
+            gameTotalTime += Time.deltaTime;
+        
         if (!gameStarted)
         {
             if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space))
@@ -84,9 +89,7 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(2.0f);
         Slider.gameObject.SetActive(true);
-
 	}
-
 
     private IEnumerator OnWin()
     {

@@ -178,13 +178,13 @@ public class AiPerson : MonoBehaviour
         ConversationMinTime = 8f;
         StandMaxTime = 5f;
         StandMinTime = 10f;
-        InfectMaxTime = 9f;
+        InfectMaxTime = 8f;
         InfectMinTime = 6f;
 
         if (IsAgent)
         {
-            ConversationMaxTime = 9f;
-            ConversationMinTime = 7f;
+            ConversationMaxTime = 8f;
+            ConversationMinTime = 4f;
             StandMaxTime = 5f;
             StandMinTime = 10f;
         }
@@ -294,10 +294,21 @@ public class AiPerson : MonoBehaviour
 
         Activity newActivity = null;
 
-        if (UnityEngine.Random.value <= 0.3f)
-            newActivity = director.FindActivity(this, typeof(StandAt));
-        else if (UnityEngine.Random.value > 0.3f)
-            newActivity = director.FindActivity(this, typeof(Conversation));
+        if(!IsAgent)
+        {
+            if (UnityEngine.Random.value <= 0.3f)
+                newActivity = director.FindActivity(this, typeof(StandAt));
+            else if (UnityEngine.Random.value > 0.3f)
+                newActivity = director.FindActivity(this, typeof(Conversation));
+        }
+        else {
+            if (UnityEngine.Random.value <= 0.15f)
+                newActivity = director.FindActivity(this, typeof(StandAt));
+            else if (UnityEngine.Random.value > 0.15f)
+                newActivity = director.FindActivity(this, typeof(Conversation));
+        }
+
+
 
         if (newActivity == null || !newActivity.CanJoin(this) || newActivity == activity)
             return;
@@ -411,7 +422,10 @@ public class AiPerson : MonoBehaviour
         activityTime -= Time.deltaTime;
         Debug.DrawRay(transform.position + new Vector3(0.1f, 0, 0), Vector3.up * (activityTime / startingActivityTime) * 4, activity.Color);
 
-        if(activity && IsAgent && !didInfect && UnityEngine.Random.value <= 0.10)
+        float totalTime = director.GetComponent<GameManager>().gameTotalTime;
+        float randConverseInfect = UnityEngine.Random.value;
+
+        if(activity && IsAgent && !didInfect && randConverseInfect <= 0.20f && totalTime >= 10)
         {
             InfectParticipant(activity);
             didInfect = true;
