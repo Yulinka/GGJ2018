@@ -177,7 +177,7 @@ public class BodyGenerator : MonoBehaviour
 
 	private string buildHairSpritePath(BodyConfig config)
 	{
-		int hairIndex = (int)(UnityEngine.Random.value * (4 - 1)) + 1;
+		int hairIndex = (int)(UnityEngine.Random.value * 4) + 1;
 		return "Characters/" + this.bodyTypeToPath(config.Body)
 			+ "/hairs/hair" + hairIndex + this.hairColorTypeToPath(config.Hair);
 	}

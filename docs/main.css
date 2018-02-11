@@ -1,0 +1,39 @@
+div {
+    border: 1px solid #000000;
+}
+
+img {
+    position: absolute;
+}
+
+.flex {
+    display: flex;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.sidebar {
+    max-width: 120px;
+}
+
+#body {
+    z-index: 0;
+}
+
+#clothes {
+    z-index: 1;
+}
+
+#hair {
+    z-index: 2;
+}
+
+#glasses {
+    z-index: 3;
+}
+
+#hat {
+    z-index: 4;
+}

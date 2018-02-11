@@ -1,1 +1,137 @@
-Hello World
+<link href="main.css" rel="stylesheet">
+<div id="topbar" class="flex column">
+    Top bar
+    <div align="center" style="position:relative;left:0px;top:0px">
+        <img id="bodyImg" src="../Assets/Game/Resources/Characters/hotlady/bases/face1brown.png"/>
+        <img id="clothesImg" src="../Assets/Game/Resources/Characters/hotlady/dresses/black.png"/>
+        <img id="hairImg" src="../Assets/Game/Resources/Characters/hotlady/hairs/hair1silver.png"/>
+        <img id="glassesImg" src="../Assets/Game/Resources/Characters/hotlady/glasses/glasses.png"/>
+        <img id="hatImg" src="../Assets/Game/Resources/Characters/hotlady/hats/hat2black.png"/>
+    </div>
+    <div class="column sidebar">
+        <select id="bodySelect" onchange="updateImages()">
+          <option value="hotlady" selected>Hot Lady</option>
+          <option value="fatlady">Fat Lady</option>
+          <option value="hotgent">Hot Gent</option>
+          <option value="fatgent">Fat Gent</option>
+        </select>
+        <select id="skinColorSelect" onchange="updateImages()">
+          <option value="brown" selected>Brown</option>
+          <option value="cream">Cream</option>
+          <option value="dark">Dark</option>
+          <option value="white">White</option>
+        </select>
+        <select id="faceSelect" onchange="updateImages()">
+          <option value="face1" selected>Face 1</option>
+          <option value="face2">Face 2</option>
+          <option value="face3">Face 3</option>
+        </select>
+        <select id="hatSelect" onchange="updateImages()">
+          <option value="none">No Hat</option>
+          <option value="hat1" selected>Hat 1</option>
+          <option value="hat2">Hat 2</option>
+          <option value="hat3">Hat 3</option>
+        </select>
+        <select id="hatColorSelect" onchange="updateImages()">
+          <option value="green" selected>Green</option>
+          <option value="blue">Blue</option>
+          <option value="red">Red</option>
+          <option value="black">Black</option>
+          <option value="gold">Gold</option>
+          <option value="silver">Silver</option>
+        </select>
+        <select id="hairSelect" onchange="updateImages()">
+          <option value="hair1" selected>Hair 1</option>
+          <option value="hair2">Hair 2</option>
+          <option value="hair3">Hair 3</option>
+          <option value="hair4">Hair 4</option>
+        </select>
+        <select id="hairColorSelect" onchange="updateImages()">
+          <option value="blonde" selected>Blonde</option>
+          <option value="black">Black</option>
+          <option value="red">Red</option>
+          <option value="brown">Brown</option>
+          <option value="silver">Silver</option>
+        </select>
+        <select id="clothesSelect" onchange="updateImages()">
+          <option value="red" selected>Red</option>
+          <option value="black">Black</option>
+          <option value="green">Green</option>
+          <option value="blue">Blue</option>
+          <option value="gold">Blue</option>
+          <option value="silver">Blue</option>
+        </select>
+        <select id="glassesSelect" onchange="updateImages()">
+          <option value="glasses" selected>Glasses</option>
+          <option value="none">No Glasses</option>
+        </select>
+    </div>
+</div>
+<script>
+    var bodySelect = document.getElementById("bodySelect");
+    var skinColorSelect = document.getElementById("skinColorSelect");
+    var faceSelect = document.getElementById("faceSelect");
+    var hatSelect = document.getElementById("hatSelect");
+    var hatColorSelect = document.getElementById("hatColorSelect");
+    var hairSelect = document.getElementById("hairSelect");
+    var hairColorSelect = document.getElementById("hairColorSelect");
+    var glassesSelect = document.getElementById("glassesSelect");
+    var clothesSelect = document.getElementById("clothesSelect");
+
+    var bodyImg = document.getElementById("bodyImg");
+    var clothesImg = document.getElementById("clothesImg");
+    var hairImg = document.getElementById("hairImg");
+    var glassesImg = document.getElementById("glassesImg");
+    var hatImg = document.getElementById("hatImg");
+
+    function getClothesDir(body) {
+        if (body == "hotlady" || body == "fatlady") {
+            return "dresses";
+        }
+        else {
+            return "suits";
+        }
+    }
+
+    function getGlassesFile() {
+        // special case for glasses for hotlay face 2, which needs the glasses repositioned
+        if (bodySelect.value == "hotlady" && faceSelect.value == "face2") {
+            return "glasses2";
+        }
+        else {
+            return "glasses"
+        }
+    }
+
+    function updateImages() {
+        const baseAssetURL = "../Assets/Game/Resources/Characters/";
+        bodyImg.src = baseAssetURL + bodySelect.value + "/bases/" + faceSelect.value + skinColorSelect.value + ".png";
+        clothesImg.src = baseAssetURL + bodySelect.value + "/" + getClothesDir(bodySelect.value) + "/" + clothesSelect.value + ".png";
+        hairImg.src = baseAssetURL + bodySelect.value + "/hairs/" + hairSelect.value + hairColorSelect.value + ".png";
+
+        if (glassesSelect.value == "none") {
+            glassesImg.style.visibility = "hidden";
+        }
+        else {
+            glassesImg.style.visibility = "visible";
+            glassesImg.src = baseAssetURL + bodySelect.value + "/glasses/" + getGlassesFile() + ".png";
+        }
+
+        if (hatSelect.value == "none") {
+            hatImg.style.visibility = "hidden";
+            hatColorSelect.disabled = false;
+        }
+        else if (hatSelect.value == "hat3" && (bodySelect.value == "hotgent" || bodySelect.value == "fatgent")) {
+            // special case for bowler hat (hat3) which can only be black
+            hatColorSelect.value = "black";
+            hatColorSelect.disabled = true;
+            hatImg.style.visibility = "visible";
+            hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png";
+        }
+        else {
+            hatImg.style.visibility = "visible";
+            hatColorSelect.disabled = false;
+            hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png";
+        }
+    }
+</script>
