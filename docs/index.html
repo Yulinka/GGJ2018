@@ -122,6 +122,61 @@
         updateImages();
     }
 
+    function updateQueryParams() {
+        var baseUrl = [location.protocol, '//', location.host, location.pathname].join(''),
+            params = [
+                'body=' + bodySelect.value,
+                'skin=' + skinColorSelect.value,
+                'face=' + faceSelect.value,
+                'hat=' + hatSelect.value,
+                'hatc=' + hatColorSelect.value,
+                'hair=' + hairSelect.value,
+                'hairc=' + hairColorSelect.value,
+                'glasses=' + glassesSelect.value,
+                'clothesc=' + clothesSelect.value,
+            ],
+            params = '?' + params.join('&');
+
+        window.history.replaceState({}, "", baseUrl + params);
+    }
+
+    function parseQueryParams() {
+        var queryString = location.search.substr(1);
+        queryString.split('&').forEach(function(part) {
+            var item = part.split('=');
+            switch (item[0]) {
+                case 'body':
+                    bodySelect.value = item[1];
+                    break;
+                case 'skin':
+                    skinColorSelect.value = item[1];
+                    break;
+                case 'face':
+                    faceSelect.value = item[1];
+                    break;
+                case 'hat':
+                    hatSelect.value = item[1];
+                    break;
+                case 'hatc':
+                    hatColorSelect.value = item[1];
+                    break;
+                case 'hair':
+                    hairSelect.value = item[1];
+                    break;
+                case 'hairc':
+                    hairColorSelect.value = item[1];
+                    break;
+                case 'glasses':
+                    glassesSelect.value = item[1];
+                    break;
+                case 'clothesc':
+                    clothesSelect.value = item[1];
+                    break;
+            }
+        })
+        updateImages();
+    }
+
     function updateImages() {
         const baseAssetURL = "../Assets/Game/Resources/Characters/";
         bodyImg.src = baseAssetURL + bodySelect.value + "/bases/" + faceSelect.value + skinColorSelect.value + ".png";
@@ -152,5 +207,9 @@
             hatColorSelect.disabled = false;
             hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png";
         }
+        updateQueryParams();
     }
+
+    // Parse URL on load
+    parseQueryParams();
 </script>
