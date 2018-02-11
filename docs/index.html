@@ -9,6 +9,7 @@
         <img id="hatImg" src="../Assets/Game/Resources/Characters/hotlady/hats/hat2black.png"/>
     </div>
     <div class="column sidebar">
+        <button onclick="randomize()">Randomize</button>
         <select id="bodySelect" onchange="updateImages()">
           <option value="hotlady" selected>Hot Lady</option>
           <option value="fatlady">Fat Lady</option>
@@ -101,6 +102,24 @@
         else {
             return "glasses"
         }
+    }
+
+    function randomIndex(maxIndex) {
+        return Math.floor(Math.random() * maxIndex);
+    }
+
+    function randomize() {
+        bodySelect.selectedIndex = randomIndex(bodySelect.length);
+        skinColorSelect.selectedIndex = randomIndex(skinColorSelect.length);
+        faceSelect.selectedIndex = randomIndex(faceSelect.length);
+        hatSelect.selectedIndex = randomIndex(hatSelect.length);
+        hatColorSelect.selectedIndex = randomIndex(hatColorSelect.length);
+        hairSelect.selectedIndex = randomIndex(hairSelect.length);
+        hairColorSelect.selectedIndex = randomIndex(hairColorSelect.length);
+        glassesSelect.selectedIndex = randomIndex(glassesSelect.length);
+        clothesSelect.selectedIndex = randomIndex(clothesSelect.length);
+
+        updateImages();
     }
 
     function updateImages() {
