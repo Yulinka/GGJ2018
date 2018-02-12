@@ -35,9 +35,8 @@ h1 {
 }
 
 .sidebar {
+    display: inline-table;
     padding-top: 15px;
-    max-width: 175px;
-    max-height: 490px;
     border: 1px solid black;
 }
 
