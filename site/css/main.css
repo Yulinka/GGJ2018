@@ -2,7 +2,7 @@ div {
     /* border: 1px solid #000000; */
 }
 
-img {
+.guest-canvas img {
     position: absolute;
     left: 50%;
     margin-left: -205px;
@@ -10,7 +10,18 @@ img {
 }
 
 h1 {
+    flex-grow: 1;
     text-align: center;
+}
+
+.github-btn {
+    height: 60px;
+    width: 146px;
+}
+
+.ggj-btn {
+    height: 60px;
+    width: 60px;
 }
 
 .flex {
@@ -19,6 +30,14 @@ h1 {
 
 .column {
     flex-direction: column;
+}
+
+.row {
+    flex-direction: row;
+}
+
+.margin-auto {
+    margin: auto;
 }
 
 .sidebar {
