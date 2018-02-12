@@ -203,17 +203,17 @@
     }
 
     function updateImages() {
-        const baseAssetURL = "GGJ2018/Assets/Game/Resources/Characters/";
-        bodyImg.src = baseAssetURL + bodySelect.value + "/bases/" + faceSelect.value + skinColorSelect.value + ".png";
-        clothesImg.src = baseAssetURL + bodySelect.value + "/" + getClothesDir(bodySelect.value) + "/" + clothesSelect.value + ".png";
-        hairImg.src = baseAssetURL + bodySelect.value + "/hairs/" + hairSelect.value + hairColorSelect.value + ".png";
+        const baseAssetURL = "https://github.com/brisberg/GGJ2018/blob/master/Assets/Game/Resources/Characters/";
+        bodyImg.src = baseAssetURL + bodySelect.value + "/bases/" + faceSelect.value + skinColorSelect.value + ".png?raw=true";
+        clothesImg.src = baseAssetURL + bodySelect.value + "/" + getClothesDir(bodySelect.value) + "/" + clothesSelect.value + ".png?raw=true";
+        hairImg.src = baseAssetURL + bodySelect.value + "/hairs/" + hairSelect.value + hairColorSelect.value + ".png?raw=true";
 
         if (glassesSelect.value == "none") {
             glassesImg.style.visibility = "hidden";
         }
         else {
             glassesImg.style.visibility = "visible";
-            glassesImg.src = baseAssetURL + bodySelect.value + "/glasses/" + getGlassesFile() + ".png";
+            glassesImg.src = baseAssetURL + bodySelect.value + "/glasses/" + getGlassesFile() + ".png?raw=true";
         }
 
         if (hatSelect.value == "none") {
@@ -225,12 +225,12 @@
             hatColorSelect.value = "black";
             hatColorSelect.disabled = true;
             hatImg.style.visibility = "visible";
-            hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png";
+            hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png?raw=true";
         }
         else {
             hatImg.style.visibility = "visible";
             hatColorSelect.disabled = false;
-            hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png";
+            hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png?raw=true";
         }
         updateQueryParams();
     }
