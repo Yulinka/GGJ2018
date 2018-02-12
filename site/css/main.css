@@ -1,17 +1,11 @@
-div {
-    /* border: 1px solid #000000; */
-}
-
-.guest-canvas img {
-    position: absolute;
-    left: 50%;
-    margin-left: -205px;
-    margin-top: -27px
-}
-
 h1 {
     flex-grow: 1;
     text-align: center;
+}
+
+.guest-canvas {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .github-btn {
@@ -43,6 +37,7 @@ h1 {
 .sidebar {
     padding-top: 15px;
     max-width: 175px;
+    max-height: 490px;
     border: 1px solid black;
 }
 

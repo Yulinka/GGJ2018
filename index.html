@@ -6,14 +6,7 @@
         <a href="https://globalgamejam.org/2018/games/bashin-fascism" class="margin-auto"><img class="ggj-btn" src="site/images/GGJ-round-logo.jpg"></a>
         <h1>Bashin' Fascism Party Guest Generator</h1>
     </div>
-    <div class="guest-canvas" align="center" style="position:relative;left:0px;top:0px">
-        <img id="bodyImg" src="../Assets/Game/Resources/Characters/hotlady/bases/face1brown.png"/>
-        <img id="clothesImg" src="../Assets/Game/Resources/Characters/hotlady/dresses/black.png"/>
-        <img id="hairImg" src="../Assets/Game/Resources/Characters/hotlady/hairs/hair1silver.png"/>
-        <img id="glassesImg" src="../Assets/Game/Resources/Characters/hotlady/glasses/glasses.png"/>
-        <img id="hatImg" src="../Assets/Game/Resources/Characters/hotlady/hats/hat2black.png"/>
-    </div>
-    <div style="flex-direction:row">
+    <div class="flex row">
         <div class="column sidebar">
             <a href="#" class="btn" onclick="randomize()">Randomize</a>
             <div include="form-input-select()" class="push-left">
@@ -92,12 +85,12 @@
                 </select>
             </div>
         </div>
-        <div>
-        </div>
+        <canvas id="guest-canvas" width="413" height="832" class="guest-canvas"></canvas>
     </div>
-
 </div>
 <script>
+    var canvas = document.getElementById("guest-canvas");
+
     var bodySelect = document.getElementById("bodySelect");
     var skinColorSelect = document.getElementById("skinColorSelect");
     var faceSelect = document.getElementById("faceSelect");
@@ -107,12 +100,6 @@
     var hairColorSelect = document.getElementById("hairColorSelect");
     var glassesSelect = document.getElementById("glassesSelect");
     var clothesSelect = document.getElementById("clothesSelect");
-
-    var bodyImg = document.getElementById("bodyImg");
-    var clothesImg = document.getElementById("clothesImg");
-    var hairImg = document.getElementById("hairImg");
-    var glassesImg = document.getElementById("glassesImg");
-    var hatImg = document.getElementById("hatImg");
 
     function getClothesDir(body) {
         if (body == "hotlady" || body == "fatlady") {
@@ -235,39 +222,48 @@
     }
 
     function updateImages() {
-        requestAnimationFrame(function () {
-            // const baseAssetURL = "https://github.com/brisberg/GGJ2018/blob/master/Assets/Game/Resources/Characters/";
-            const baseAssetURL = "Assets/Game/Resources/Characters/";
-            bodyImg.src = baseAssetURL + bodySelect.value + "/bases/" + faceSelect.value + skinColorSelect.value + ".png";
-            clothesImg.src = baseAssetURL + bodySelect.value + "/" + getClothesDir(bodySelect.value) + "/" + clothesSelect.value + ".png";
-            hairImg.src = baseAssetURL + bodySelect.value + "/hairs/" + hairSelect.value + hairColorSelect.value + ".png";
+        // const baseAssetURL = "https://github.com/brisberg/GGJ2018/blob/master/Assets/Game/Resources/Characters/";
+        imageURLs = [];
+        const baseAssetURL = "Assets/Game/Resources/Characters/";
+        imageURLs.push(baseAssetURL + bodySelect.value + "/bases/" + faceSelect.value + skinColorSelect.value + ".png");
+        imageURLs.push(baseAssetURL + bodySelect.value + "/" + getClothesDir(bodySelect.value) + "/" + clothesSelect.value + ".png");
+        imageURLs.push(baseAssetURL + bodySelect.value + "/hairs/" + hairSelect.value + hairColorSelect.value + ".png");
 
-            if (glassesSelect.value == "none") {
-                glassesImg.style.visibility = "hidden";
-            }
-            else {
-                glassesImg.style.visibility = "visible";
-                glassesImg.src = baseAssetURL + bodySelect.value + "/glasses/" + getGlassesFile() + ".png";
-            }
+        if (glassesSelect.value == "none") {
+            // glassesImg.style.visibility = "hidden";
+        }
+        else {
+            // glassesImg.style.visibility = "visible";
+            imageURLs.push(baseAssetURL + bodySelect.value + "/glasses/" + getGlassesFile() + ".png");
+        }
 
-            if (hatSelect.value == "none") {
-                hatImg.style.visibility = "hidden";
-                hatColorSelect.disabled = false;
-            }
-            else if (hatSelect.value == "hat3" && (bodySelect.value == "hotgent" || bodySelect.value == "fatgent")) {
-                // special case for bowler hat (hat3) which can only be black
-                hatColorSelect.value = "black";
-                hatColorSelect.disabled = true;
-                hatImg.style.visibility = "visible";
-                hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png";
-            }
-            else {
-                hatImg.style.visibility = "visible";
-                hatColorSelect.disabled = false;
-                hatImg.src = baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png?raw=true";
-            }
-            updateQueryParams();
-        })
+        if (hatSelect.value == "none") {
+            // hatImg.style.visibility = "hidden";
+            hatColorSelect.disabled = false;
+        }
+        else if (hatSelect.value == "hat3" && (bodySelect.value == "hotgent" || bodySelect.value == "fatgent")) {
+            // special case for bowler hat (hat3) which can only be black
+            hatColorSelect.value = "black";
+            hatColorSelect.disabled = true;
+            // hatImg.style.visibility = "visible";
+            imageURLs.push(baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png");
+        }
+        else {
+            // hatImg.style.visibility = "visible";
+            hatColorSelect.disabled = false;
+            imageURLs.push(baseAssetURL + bodySelect.value + "/hats/" + hatSelect.value + hatColorSelect.value + ".png");
+        }
+
+        preloadimages(imageURLs).done(function (images) {
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, 430, 830);
+            images.forEach(function(image) {
+                ctx.drawImage(image,0,0);
+            })
+            requestAnimationFrame(function () {
+                updateQueryParams();
+            });
+        });
     }
 
     // Parse URL on load
